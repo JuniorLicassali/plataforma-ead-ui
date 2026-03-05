@@ -1,0 +1,26 @@
+$radius-padrao: 20px; 
+
+.video-container, 
+.card-descricao, 
+::ng-deep .p-accordion,
+::ng-deep .p-listbox {
+    border-radius: $radius-padrao !important;
+    overflow: hidden;
+    border: none;
+}
+
+.video-container {
+    background: #000;
+    line-height: 0;
+    margin-bottom: 20px;
+    
+    iframe {
+        display: block;
+    }
+}
+
+.card-descricao {
+    padding: 20px;
+    background: #f8f9fa;
+    margin-top: 15px;
+}

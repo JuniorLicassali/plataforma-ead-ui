@@ -1,0 +1,49 @@
+<div class="container mt-5">
+  <div class="grid justify-content-center w-full">
+
+    <div class="col-12 md:col-10" style="background: #f6f9fc;">
+        @if (items[perguntaAtual]) {
+            @for (p of items[perguntaAtual].perguntas; track $index; let i = $index) {
+                <div class="mb-3 ">
+                    <p class="gap-2 m-2">{{ p.enunciado }}</p>
+                    @for (opcao of p.opcoes; track opcao.id) {
+                        <div class="flex align-items-center gap-2 m-2" style="background: #fdfdfd; border: 2px solid #cacfe6; border-radius: 8px; padding: 10px;">
+                            <p-radioButton 
+                                [name]="'grupo-' + perguntaAtual + '-' + i" 
+                                [value]="opcao.textoOpcao" 
+                                [(ngModel)]="p.respostaSelecionada" 
+                                [inputId]="'id-' + opcao.id" />
+                            <label [for]="'id-' + opcao.id">{{ opcao.textoOpcao }}</label>
+                        </div>
+                    }
+                </div>
+            }
+
+            <p-button label="Anterior" [rounded]="true" (onClick)="perguntaAnterior()" severity="secondary" />
+            <p-button label="Próxima" [rounded]="true" (onClick)="proximaPergunta()" severity="success" />
+
+        } @else if (items.length > 0) {
+            <div class="card p-5 text-center">
+                <h2>Questionário Finalizado!</h2>
+                <p-button label="Enviar Respostas" severity="help" />
+            </div>
+        } @else {
+            <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+        }
+
+
+
+
+        <!-- @for (pergunta of items; track $index) {
+            <div>
+                <p-radiobutton [name]="item.pergunta.enunciado" value="Cheese" inputId="ingredient1" />
+            </div>
+        } -->
+    </div>
+
+    <div class="col-12 md:col-2" style="background: rgb(214, 8, 146)">
+        
+    </div>
+
+  </div>
+</div>

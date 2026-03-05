@@ -1,0 +1,72 @@
+<div class="container mt-5">
+  <h2>FINALIZAR INSCRIÇÃO</h2>
+
+  <div class="grid">
+    <div class="col-12 md:col-6 flex flex-column gap-3">
+      <p-card>
+        <div class="flex align-items-center gap-3">
+          <img
+            src="https://primefaces.org/cdn/primeng/images/card-ng.jpg"
+            class="w-8rem border-round shadow-1"
+          />
+          <div>
+            <h3 class="font-bold m-0">Design Gráfico Essential</h3>
+            <p class="text-600 text-sm">Duração: 90 horas</p>
+          </div>
+        </div>
+      </p-card>
+
+      <p-card>
+        <div class="flex flex-column gap-2">
+          <div class="flex justify-content-between">
+            <span class="text-700 font-bold">Valor do Curso</span>
+            <span class="font-bold text-xl text-900">R$ 599,00</span>
+          </div>
+          <div class="flex justify-content-between text-green-600">
+            <span>Desconto</span>
+            <span>-R$ 120,00</span>
+          </div>
+          <hr class="border-top-1 border-300 my-2" />
+          <div class="flex justify-content-between text-2xl font-bold">
+            <span>Total a Pagar</span>
+            <span class="text-primary">R$ 479,00</span>
+          </div>
+        </div>
+      </p-card>
+    </div>
+    
+    <div class="col-12 md:col-6">
+      <p-card styleClass="h-full">
+        <p-tabs value="0">
+          <p-tablist>
+            <p-tab value="0">Cartão de Crédito</p-tab>
+            <p-tab value="1" disabled="">Boleto</p-tab>
+            <p-tab value="2" disabled="">PIX</p-tab>
+          </p-tablist>
+
+          <p-tabpanels>
+            <p-tabpanel value="0">
+              <div class="py-4 text-center">
+                <p class="text-600 mb-4">
+                  Você será redirecionado para o site seguro do pagamento.
+                </p>
+                <p-button
+                  label="IR PARA O PAGAMENTO"
+                  styleClass="w-full custom-btn"
+                  icon="pi pi-external-link"
+                ></p-button>
+                <div class="mt-4 flex justify-content-center gap-3 grayscale opacity-60">
+                  <i class="pi pi-paypal text-2xl"></i>
+                  <i class="pi pi-credit-card text-2xl"></i>
+                  <span class="font-bold">VISA</span>
+                </div>
+              </div>
+            </p-tabpanel>
+            <p-tabpanel value="1">Conteúdo do Boleto...</p-tabpanel>
+            <p-tabpanel value="2">Conteúdo do PIX...</p-tabpanel>
+          </p-tabpanels>
+        </p-tabs>
+      </p-card>
+    </div>
+  </div>
+</div>

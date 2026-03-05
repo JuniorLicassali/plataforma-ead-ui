@@ -1,0 +1,29 @@
+<div class="container mt-5">
+  <h2>EXPANDA SEUS CONHECIMENTOS</h2>
+
+    <p-iconfield>
+        <p-inputicon class="pi pi-search" />
+        <input type="text" pInputText placeholder="Buscar cursos..." />
+    </p-iconfield>
+
+  <h5>CURSOS DISPONIVEIS</h5>
+
+  <div class="grid">
+    @for (curso of cursos; track $index) {
+      <div class="col-12 md:col-6 lg:col-3">
+        <p-card [style]="{ overflow: 'hidden' }">
+          <ng-template #header>
+            <img alt="Card" class="w-full" [src]="curso.foto" />
+          </ng-template>
+          <ng-template #title>{{ curso.titulo }}</ng-template>
+          <p>{{ curso.descricao }}</p>
+          <ng-template #footer>
+            <div class="flex gap-4 mt-1">
+              <p-button [label]="curso.matricula === 'ATIVA' ? 'Assistir Curso' : 'Comprar Curso'" class="w-full" styleClass="w-full" />
+            </div>
+          </ng-template>
+        </p-card>
+      </div>
+    }
+  </div>
+</div>

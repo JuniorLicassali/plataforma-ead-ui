@@ -1,0 +1,36 @@
+<div class="flex justify-content-center surface-card shadow-1 border-bottom-1 border-300">
+    <div class="w-full" style="max-width: 1200px;"> 
+        <p-menubar class="border-none" [style]="{'background-color': 'transparent', 'border': 'none'}">
+            
+            <ng-template pTemplate="start">
+                <div class="flex align-items-center gap-2 cursor-pointer">
+                    <i class="pi pi-book text-primary text-2xl"></i>
+                    <span class="font-bold text-xl text-900 text-nowrap">PLATAFORMA EAD</span>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="end">
+                <div class="flex align-items-center gap-4">
+                    <nav class="hidden md:flex gap-5 mr-3">
+                        <a class="no-underline text-600 hover:text-primary cursor-pointer font-medium transition-colors transition-duration-200">Meus Cursos</a>
+                        <a class="no-underline text-600 hover:text-primary cursor-pointer font-medium transition-colors transition-duration-200">Adicionar Curso</a>
+                        <a class="no-underline text-600 hover:text-primary cursor-pointer font-medium transition-colors transition-duration-200">Perfil</a>
+                    </nav>
+
+                    <div class="border-left-1 border-300 h-2rem hidden md:block"></div>
+
+                    <i class="pi pi-bell text-xl cursor-pointer text-600 hover:text-primary"></i>
+                    
+                    <p-avatar 
+                        image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" 
+                        shape="circle" 
+                        size="large"
+                        class="cursor-pointer"
+                        [routerLink]="['/checkout']">
+                    </p-avatar>
+                </div>
+            </ng-template>
+
+        </p-menubar>
+    </div>
+</div>

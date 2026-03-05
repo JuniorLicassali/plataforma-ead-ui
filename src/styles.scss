@@ -1,0 +1,30 @@
+/* You can add global styles to this file, and also import other style files */
+@import "primeicons/primeicons.css";
+@import "primeflex/primeflex.css";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+:root {
+    --p-font-family: 'Inter', sans-serif;
+}
+
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: #eaedf5;
+    color: #334155;
+}
+
+.p-card {
+    border-radius: 12px !important;
+    border: none !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
+}
+
+
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin-right: auto;
+    margin-left: auto;
+}
