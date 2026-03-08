@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MenubarModule, Menubar } from 'primeng/menubar';
 import { MenuItem } from 'primeng/api';
 import { AvatarModule } from 'primeng/avatar';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../seguranca/auth-service';
 
 @Component({
   selector: 'app-navbar',
@@ -13,6 +14,7 @@ import { RouterLink } from '@angular/router';
 export class Navbar {
 
   items: MenuItem[] | undefined;
+  private authService = inject(AuthService);
 
   ngOnInit() {
         this.items = [
@@ -24,4 +26,8 @@ export class Navbar {
             }
         ];
     }
+
+    logout() {
+    this.authService.logout();
+  }
 }

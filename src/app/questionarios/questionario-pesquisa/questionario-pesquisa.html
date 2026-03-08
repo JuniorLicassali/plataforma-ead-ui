@@ -1,0 +1,82 @@
+<div class="container mt-5">
+  <div class="grid justify-content-center w-full">
+    <div class="flex justify-content-end p-3">
+      <p-chip
+        [label]="'Tempo restante: ' + tempoRestante()"
+        icon="pi pi-clock"
+        style="background-color: #f3f4f6; color: #374151"
+      />
+    </div>
+
+    <div class="col-12 md:col-12 card-quest">
+      @if (items[perguntaAtual]) {
+        <div class="mb-3">
+          <div class="flex justify-content-between align-items-center mb-2">
+            <span class="text-sm font-semibold text-500"
+              >Questão {{ perguntaAtual + 1 }} de {{ items.length }}</span
+            >
+            <span class="text-xs text-primary font-bold"
+              >{{ (((perguntaAtual + 1) / items.length) * 100).toFixed(0) }}%</span
+            >
+          </div>
+
+          <p-progressBar
+            [value]="((perguntaAtual + 1) / items.length) * 100"
+            [showValue]="false"
+            style="height: 6px"
+          />
+        </div>
+        <div class="mb-3">
+          <p class="gap-2 m-2">{{ items[perguntaAtual].enunciado }}</p>
+          @for (opcao of items[perguntaAtual].opcoes; track $index) {
+            <div
+              class="flex align-items-center gap-2 m-2"
+              style="
+                background: #fdfdfd;
+                border: 2px solid #cacfe6;
+                border-radius: 8px;
+                padding: 10px;
+              "
+            >
+              <p-radioButton
+                [name]="'grupo-' + perguntaAtual"
+                [value]="opcao.texto"
+                [(ngModel)]="items[perguntaAtual].respostaSelecionada"
+                [inputId]="'id-' + $index"
+              />
+              <label [for]="'id-' + $index">{{ opcao.texto }}</label>
+            </div>
+          }
+        </div>
+
+        <div class="flex justify-content-center gap-2">
+          <p-button
+            label="Anterior"
+            [hidden]="perguntaAtual === 0 ? true : false"
+            [rounded]="true"
+            (onClick)="perguntaAnterior()"
+            severity="secondary"
+          />
+          <p-button
+            label="Próxima"
+            [rounded]="true"
+            (onClick)="proximaPergunta()"
+            [disabled]="!items[perguntaAtual].respostaSelecionada"
+            severity="success"
+          />
+        </div>
+      } @else if (items.length > 0) {
+        <div class="card p-5 text-center">
+          <h2>Questionário Finalizado!</h2>
+          <p-button
+            label="Enviar Respostas"
+            severity="success"
+            (onClick)="prepararEnvioRespostas()"
+          />
+        </div>
+      } @else {
+        <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+      }
+    </div>
+  </div>
+</div>

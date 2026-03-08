@@ -1,0 +1,10 @@
+$radius-padrao: 20px; 
+
+.card-quest {
+    border-radius: $radius-padrao !important;
+    overflow: hidden;
+    border: none;
+    background: #f6f9fc;
+    border-radius: 20px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
