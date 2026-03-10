@@ -59,6 +59,7 @@ export interface PerguntaOpcaoCadastro {
 }
 
 export interface PerguntaCadastro {
+  id: number;
   enunciado: string;
   opcoes: PerguntaOpcaoCadastro[];
 }

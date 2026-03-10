@@ -6,7 +6,7 @@ import { Questionario } from './questionarios/questionario-pesquisa/questionario
 import { QuestionarioCadastro } from './questionarios/questionario-cadastro/questionario-cadastro';
 import { Authorized } from './seguranca/authorized/authorized/authorized';
 import { authGuard } from './seguranca/auth-guard';
-import { CursosCadastrar } from './cursos/cursos-cadastrar/cursos-cadastrar';
+import { CursosCadastro } from './cursos/cursos-cadastro/cursos-cadastro';
 
 export const routes: Routes = [
     { path: 'cursos', component: CardsCursos, canActivate: [authGuard] },
@@ -15,7 +15,7 @@ export const routes: Routes = [
     { path: 'questionario', component: Questionario, canActivate: [authGuard] },
     { path: 'questionarios', component: QuestionarioCadastro, canActivate: [authGuard] },
     { path: 'cursos/:cursoId/questionarios/:questionarioId', component: QuestionarioCadastro, canActivate: [authGuard] },
-    { path: 'admin/cursos', component: CursosCadastrar, canActivate: [authGuard] },
+    { path: 'admin/cursos', component: CursosCadastro, canActivate: [authGuard] },
     
     { path: '', redirectTo: 'conteudo', pathMatch: 'full' },
     { path: 'authorized', component: Authorized }

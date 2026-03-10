@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 
@@ -7,7 +7,7 @@ import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
-import { CursoResumido, QuestionarioCadastroProf } from '../../core/model';
+import { CursoResumido, PerguntaCadastro, QuestionarioCadastroProf } from '../../core/model';
 import { QuestionarioService } from '../questionario-service';
 import { MessageService } from 'primeng/api';
 import { InputTextModule } from 'primeng/inputtext';
@@ -23,13 +23,12 @@ import { PerguntaDialog } from '../../pergunta-dialog/pergunta-dialog';
     CardModule,
     TableModule,
     PerguntaDialog,
-    InputTextModule
+    InputTextModule,
   ],
   templateUrl: './questionario-cadastro.html',
   styleUrl: './questionario-cadastro.scss',
 })
-export class QuestionarioCadastro {
-
+export class QuestionarioCadastro implements OnInit {
   cursos = signal<CursoResumido[]>([]);
   cursoId!: number;
   questionarioId!: number;
@@ -39,16 +38,13 @@ export class QuestionarioCadastro {
     id: 0,
     descricao: '',
     ativo: true,
-    perguntas: []
+    perguntas: [],
   });
 
   modoEdicao: boolean = false;
-  // exibindoDialog = false;
-  // indiceCorreto: number | null = null;
-
   exibirDialog = signal(false);
-
-  
+  perguntaParaEnviar = signal<PerguntaCadastro | null>(null);
+  indiceSelecionado: number | null = null;
 
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -80,51 +76,81 @@ export class QuestionarioCadastro {
   }
 
   criarQuestionario() {
-    // this.modoEdicao = true;
-
     const payload = {
-      descricao: this.nomeQuestionario
+      descricao: this.nomeQuestionario,
     };
 
-    this.questionarioService.adicionar(payload, this.cursoId)
+    this.questionarioService
+      .adicionar(payload, this.cursoId)
       .then((questionarioCriado) => {
-      this.messageService.add({severity: 'success', detail: 'Questionario criado com sucesso!'});
-      this.questionario.set(questionarioCriado);
+        this.messageService.add({
+          severity: 'success',
+          detail: 'Questionario criado com sucesso!',
+        });
+        this.questionario.set(questionarioCriado);
 
-      this.router.navigate(['/cursos', this.cursoId, 'questionarios', questionarioCriado.id]);
+        this.router.navigate(['/cursos', this.cursoId, 'questionarios', questionarioCriado.id]);
       })
-      .catch(erro => this.errorHandler.handle(erro));
+      .catch((erro) => this.errorHandler.handle(erro));
   }
 
   carregarQuestionario(id: number) {
-    this.questionarioService.buscarPorCodigo(this.cursoId, id)
-      .then(questionario => {
+    this.questionarioService
+      .buscarPorCodigo(this.cursoId, id)
+      .then((questionario) => {
         this.questionario.set(questionario);
       })
-      .catch(erro => this.errorHandler.handle(erro));
+      .catch((erro) => this.errorHandler.handle(erro));
   }
 
   salvarQuestionarioComPerguntas(perguntaRecebida: any) {
-  this.questionarioService.adicionarPergunta(perguntaRecebida, this.cursoId, this.questionarioId)
-    .then((questionarioAtualizado: QuestionarioCadastroProf) => {
-      this.questionario.set(questionarioAtualizado);
+    this.questionarioService
+      .adicionarPergunta(perguntaRecebida, this.cursoId, this.questionarioId)
+      .then((questionarioAtualizado: QuestionarioCadastroProf) => {
+        this.questionario.set(questionarioAtualizado);
 
-      this.exibirDialog.set(false);
-      
-      this.messageService.add({ 
-        severity: 'success', 
-        summary: 'Sucesso', 
-        detail: 'Pergunta salva e questionário atualizado!' 
+        this.exibirDialog.set(false);
+
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Sucesso',
+          detail: 'Pergunta salva e questionário atualizado!',
+        });
+      })
+      .catch((err) => {
+        this.errorHandler.handle(err);
       });
-    })
-    .catch((err) => {
-      this.errorHandler.handle(err);
-    });
-}
+  }
 
+  prepararNovaPergunta() {
+    this.perguntaParaEnviar.set(null);
+    this.indiceSelecionado = null;
+    this.exibirDialog.set(true);
+  }
 
-  chamarLog() {
-    console.log(this.questionario);
+  prepararEdicao(pergunta: PerguntaCadastro) {
+    this.perguntaParaEnviar.set({ ...pergunta });
+    this.exibirDialog.set(true);
+  }
+
+  salvarEditada(perguntaEditada: PerguntaCadastro) {
+    const idDaPergunta = perguntaEditada.id;
+
+    const { id, ...dadosParaOBody } = perguntaEditada;
+
+    this.questionarioService
+      .editarPergunta(dadosParaOBody, this.cursoId, this.questionarioId, idDaPergunta)
+      .then((res) => {
+        this.questionario.set(res);
+        this.fecharDialog();
+        this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Editado!' });
+      });
+  }
+
+  fecharDialog() {
+    this.exibirDialog.set(false);
+    this.perguntaParaEnviar.set(null);
+    this.indiceSelecionado = null;
   }
 
   private chamarCarregarQuestionario() {
@@ -132,5 +158,4 @@ export class QuestionarioCadastro {
       this.carregarQuestionario(this.questionarioId);
     }
   }
-
 }

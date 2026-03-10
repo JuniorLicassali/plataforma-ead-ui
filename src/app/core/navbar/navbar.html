@@ -15,7 +15,7 @@
                         <a class="no-underline text-600 hover:text-primary cursor-pointer font-medium transition-colors transition-duration-200" routerLink="/cursos">Meus Cursos</a>
                         <a class="no-underline text-600 hover:text-primary cursor-pointer font-medium transition-colors transition-duration-200" routerLink="/admin/cursos">Gerenciar Cursos</a>
                         <a class="no-underline text-600 hover:text-primary cursor-pointer font-medium transition-colors transition-duration-200">Perfil</a>
-                        <button class="btn-logout" (click)="logout()">Sair</button>
+                        <p-button icon="pi pi-sign-out" (click)="logout()" severity="contrast" [text]="true" />
                     </nav>
 
                     <div class="border-left-1 border-300 h-2rem hidden md:block"></div>

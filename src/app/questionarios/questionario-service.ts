@@ -48,6 +48,15 @@ export class QuestionarioService {
     
   }
 
+  editarPergunta(pergunta: any, cursoId: number, questionarioId: number, perguntaId: number): Promise<QuestionarioCadastroProf> {
+    const url = `${this.URL}/${cursoId}/questionarios/${questionarioId}/perguntas/${perguntaId}`;
+
+    return firstValueFrom(
+      this.http.put<QuestionarioCadastroProf>(url, pergunta)
+    );
+
+  }
+
 
 
 

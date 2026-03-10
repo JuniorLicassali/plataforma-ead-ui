@@ -1,4 +1,12 @@
-import { Component, EventEmitter, inject, Input, output, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnChanges,
+  output,
+  Output
+} from '@angular/core';
 import { CheckboxModule } from 'primeng/checkbox';
 import { TextareaModule } from 'primeng/textarea';
 
@@ -24,13 +32,13 @@ import { InputTextModule } from 'primeng/inputtext';
     ButtonModule,
     CheckboxModule,
     InputTextModule,
-    TextareaModule
+    TextareaModule,
   ],
   templateUrl: './pergunta-dialog.html',
   styleUrl: './pergunta-dialog.scss',
 })
-export class PerguntaDialog {
-  @Input() pergunta?: PerguntaCadastro;
+export class PerguntaDialog implements OnChanges {
+  @Input() pergunta?: PerguntaCadastro | null = null;
   // @Output() salvar = new EventEmitter<PerguntaCadastro>();
   @Output() cancelar = new EventEmitter<void>();
 
@@ -42,8 +50,24 @@ export class PerguntaDialog {
   onSalvar = output<any>();
   onCancelar = output<void>();
 
-  fechar() {
-    this.onClose.emit();
+  perguntaLocal: any;
+  ngOnChanges() {
+    if (this.pergunta) {
+      this.opcoes.clear();
+
+      this.pergunta.opcoes.forEach((opcao) => {
+        this.opcoes.push(
+          this.formBuilder.group({
+            texto: [opcao.texto, Validators.required],
+            isCorreta: [opcao.isCorreta],
+          }),
+        );
+      });
+
+      this.formulario.patchValue({
+        enunciado: this.pergunta.enunciado,
+      });
+    }
   }
 
   formulario: FormGroup = this.formBuilder.group({
@@ -81,10 +105,15 @@ export class PerguntaDialog {
 
   salvar() {
     if (this.formulario.valid && this.temRespostaCorreta()) {
-      console.log('Objeto Gerado:', this.formulario.value);
-      this.onSalvar.emit(this.formulario.value);
+      const dados = this.formulario.value;
+
+      const perguntaCompleta = {
+        ...dados,
+        id: this.pergunta?.id,
+      };
+      this.onSalvar.emit(perguntaCompleta);
     } else {
-      alert('Marque pelo menos uma opção como correta!');
+      alert('Preencha o enunciado e marque uma opção correta!');
     }
   }
 }

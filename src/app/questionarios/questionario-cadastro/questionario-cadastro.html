@@ -44,16 +44,42 @@
       <div class="fadein animation-duration-500">
         <div class="flex justify-content-between align-items-center mb-4">
           <h2>Perguntas Cadastradas</h2>
-          <p-button label="Nova Pergunta" icon="pi pi-plus" (click)="exibirDialog.set(true)" />
+          <p-button label="Nova Pergunta" icon="pi pi-plus" (click)="prepararNovaPergunta()" />
         </div>
 
         <p-card>
-          <p-table [value]="questionario().perguntas" ...> </p-table>
+          <!-- <p-table [value]="questionario().perguntas" ...> </p-table> -->
+          <p-table [value]="questionario().perguntas" [tableStyle]="{ 'min-width': '50rem' }">
+            <ng-template #header>
+              <tr>
+                <th>Enunciado</th>
+                <th>Opções</th>
+                <th style="width: 5rem">Ações</th>
+              </tr>
+            </ng-template>
+            <ng-template #body let-pergunta let-i="index">
+              <tr>
+                <td>{{ pergunta.enunciado }}</td>
+                <td>{{ pergunta.opcoes.length }}</td>
+                <td>
+                  <button
+                    pButton
+                    icon="pi pi-pencil"
+                    (click)="prepararEdicao(pergunta)"
+                    class="p-button-success"
+                  ></button>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
         </p-card>
         @if (exibirDialog()) {
           <app-pergunta-dialog
-            (onSalvar)="salvarQuestionarioComPerguntas($event)"
-            (onCancelar)="exibirDialog.set(false)"
+            [pergunta]="perguntaParaEnviar()"
+            (onSalvar)="
+              perguntaParaEnviar() ? salvarEditada($event) : salvarQuestionarioComPerguntas($event)
+            "
+            (onCancelar)="fecharDialog()"
           />
         }
       </div>
