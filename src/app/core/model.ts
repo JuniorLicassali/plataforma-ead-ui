@@ -24,6 +24,11 @@ export class PerguntaOpcao {
     texto!: string;
 }
 
+export class CursoResumido {
+  id!: number;
+  nome!: string;
+}
+
 
 
 

@@ -53,6 +53,7 @@
                 [options]="modulo.aulas"
                 [(ngModel)]="aulaSelecionada"
                 (onChange)="onAulaChange($event)"
+                [metaKeySelection]="false"
                 class="w-full md:w-56">
                 <ng-template #item let-aula>
                   <div class="flex align-items-center gap-2">

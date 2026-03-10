@@ -3,17 +3,17 @@
         <p-menubar class="border-none" [style]="{'background-color': 'transparent', 'border': 'none'}">
             
             <ng-template pTemplate="start">
-                <div class="flex align-items-center gap-2 cursor-pointer">
+                <div class="flex align-items-center gap-2 cursor-pointer" routerLink="/cursos">
                     <i class="pi pi-book text-primary text-2xl"></i>
-                    <span class="font-bold text-xl text-900 text-nowrap">PLATAFORMA EAD</span>
+                    <span class="font-bold text-xl text-900 text-nowrap" >PLATAFORMA EAD</span>
                 </div>
             </ng-template>
 
             <ng-template pTemplate="end">
                 <div class="flex align-items-center gap-4">
                     <nav class="hidden md:flex gap-5 mr-3">
-                        <a class="no-underline text-600 hover:text-primary cursor-pointer font-medium transition-colors transition-duration-200">Meus Cursos</a>
-                        <a class="no-underline text-600 hover:text-primary cursor-pointer font-medium transition-colors transition-duration-200">Adicionar Curso</a>
+                        <a class="no-underline text-600 hover:text-primary cursor-pointer font-medium transition-colors transition-duration-200" routerLink="/cursos">Meus Cursos</a>
+                        <a class="no-underline text-600 hover:text-primary cursor-pointer font-medium transition-colors transition-duration-200" routerLink="/admin/cursos">Gerenciar Cursos</a>
                         <a class="no-underline text-600 hover:text-primary cursor-pointer font-medium transition-colors transition-duration-200">Perfil</a>
                         <button class="btn-logout" (click)="logout()">Sair</button>
                     </nav>

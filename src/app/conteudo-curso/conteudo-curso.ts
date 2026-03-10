@@ -18,6 +18,7 @@ export class ConteudoCurso {
   modulos: any[] = [];
   aulaSelecionada: any;
   urlVideo: string = '';
+  ultimoValorValido: any;
 
   ngOnInit() {
   this.modulos = [
@@ -98,11 +99,15 @@ export class ConteudoCurso {
     this.urlVideo = this.aulaSelecionada.urlVideo;
   }
 
+  this.ultimoValorValido = this.aulaSelecionada;
   }
 
   onAulaChange(event: any) {
     if (event.value) {
       this.urlVideo = event.value.urlVideo;
+      this.ultimoValorValido = event.value;
+    } else {
+      this.aulaSelecionada = { ...this.ultimoValorValido };
     }
   }
 

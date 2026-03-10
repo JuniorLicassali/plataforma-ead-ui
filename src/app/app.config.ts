@@ -6,8 +6,8 @@ import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { httpInterceptor } from './seguranca/http-interceptor';
-import { JwtHelperService, JwtModule } from '@auth0/angular-jwt';
 import { environment } from '../environments/environment.development';
+import { MessageService } from 'primeng/api';
 
 export function tokenGetter(): string {
   return localStorage.getItem('token') ?? '';
@@ -25,6 +25,6 @@ export const appConfig: ApplicationConfig = {
                 preset: Aura,
             }
         }),
-    JwtHelperService
+    MessageService
   ]
 };
