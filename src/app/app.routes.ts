@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
-import { CardsCursos } from './cards-cursos/cards-cursos'
+import { CardsCursos } from './cursos/curso-cards/curso-cards'
 import { Checkout } from './checkout/checkout';
-import { ConteudoCurso } from './conteudo-curso/conteudo-curso';
+import { ConteudoCurso } from './cursos/curso-conteudo/curso-conteudo';
 import { Questionario } from './questionarios/questionario-pesquisa/questionario-pesquisa';
 import { QuestionarioCadastro } from './questionarios/questionario-cadastro/questionario-cadastro';
 import { Authorized } from './seguranca/authorized/authorized/authorized';

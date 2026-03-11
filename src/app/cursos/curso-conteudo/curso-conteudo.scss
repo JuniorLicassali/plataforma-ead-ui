@@ -24,3 +24,10 @@ $radius-padrao: 20px;
     background: #f8f9fa;
     margin-top: 15px;
 }
+
+p-accordion-panel {
+  display: block;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid #e0e0e0;
+}

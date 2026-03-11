@@ -11,7 +11,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { TextareaModule } from 'primeng/textarea';
 
 import { DialogModule } from 'primeng/dialog';
-import { PerguntaCadastro } from '../core/model';
+import { PerguntaCadastro } from '../../core/model';
 import {
   FormGroup,
   FormBuilder,
@@ -34,8 +34,8 @@ import { InputTextModule } from 'primeng/inputtext';
     InputTextModule,
     TextareaModule,
   ],
-  templateUrl: './pergunta-dialog.html',
-  styleUrl: './pergunta-dialog.scss',
+  templateUrl: './questionario-pergunta-dialog.html',
+  styleUrl: './questionario-pergunta-dialog.scss',
 })
 export class PerguntaDialog implements OnChanges {
   @Input() pergunta?: PerguntaCadastro | null = null;

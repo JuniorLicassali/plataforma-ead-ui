@@ -9,10 +9,13 @@ import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { CursoResumido, PerguntaCadastro, QuestionarioCadastroProf } from '../../core/model';
 import { QuestionarioService } from '../questionario-service';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { InputTextModule } from 'primeng/inputtext';
 import { ErrorHandlerService } from '../../core/error-handler-service';
-import { PerguntaDialog } from '../../pergunta-dialog/pergunta-dialog';
+import { PerguntaDialog } from '../questionario-pergunta-dialog/questionario-pergunta-dialog';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ToastModule } from 'primeng/toast';
+import { TagModule } from 'primeng/tag';
 
 @Component({
   selector: 'app-questionario-cadastro',
@@ -24,6 +27,9 @@ import { PerguntaDialog } from '../../pergunta-dialog/pergunta-dialog';
     TableModule,
     PerguntaDialog,
     InputTextModule,
+    ConfirmDialogModule,
+    ToastModule,
+    TagModule
   ],
   templateUrl: './questionario-cadastro.html',
   styleUrl: './questionario-cadastro.scss',
@@ -48,6 +54,7 @@ export class QuestionarioCadastro implements OnInit {
 
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private confirmationService = inject(ConfirmationService);
   private messageService = inject(MessageService);
   private errorHandler = inject(ErrorHandlerService);
 
@@ -145,6 +152,40 @@ export class QuestionarioCadastro implements OnInit {
         this.fecharDialog();
         this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Editado!' });
       });
+  }
+
+  confirmarExclusao(pergunta: PerguntaCadastro): void {
+    this.confirmationService.confirm({
+      message: 'Tem certeza que deseja excluir?',
+      header: 'Atenção',
+      icon: 'pi pi-info-circle',
+      rejectButtonProps: {
+                label: 'Cancelar',
+                severity: 'secondary',
+                outlined: true
+            },
+            acceptButtonProps: {
+                label: 'Excluir',
+                severity: 'danger'
+            },
+      accept: () => {
+        this.excluirPergunta(pergunta);
+      },
+      reject: () => {
+                this.messageService.add({ severity: 'error', summary: 'Rejeitado', detail: 'Você rejeitou' });
+            }
+    });
+  }
+
+  excluirPergunta(pergunta: PerguntaCadastro) {
+    this.questionarioService.excluirPergunta(this.cursoId, this.questionarioId, pergunta.id)
+      .then(() => {
+        this.questionario().perguntas = this.questionario().perguntas
+          .filter(p => p.id !== pergunta.id);
+
+        this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Pergunta deletada' });
+      })
+      .catch((error) => this.errorHandler.handle(error))
   }
 
   fecharDialog() {

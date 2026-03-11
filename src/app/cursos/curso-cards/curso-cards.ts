@@ -12,8 +12,8 @@ import { InputTextModule } from 'primeng/inputtext';
             IconFieldModule, 
             InputIconModule, 
             InputTextModule],
-  templateUrl: './cards-cursos.html',
-  styleUrl: './cards-cursos.scss',
+  templateUrl: './curso-cards.html',
+  styleUrl: './curso-cards.scss',
 })
 export class CardsCursos {
 

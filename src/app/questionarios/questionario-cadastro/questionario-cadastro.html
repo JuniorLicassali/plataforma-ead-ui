@@ -5,84 +5,112 @@
 
   <div class="grid">
     @if (!modoEdicao) {
-      <p-card>
-        <div class="flex flex-column md:flex-row gap-4 align-items-end">
-          <div class="flex flex-column gap-2 flex-grow-1">
-            <label class="font-bold">Nome do Questionário</label>
-            <div class="p-inputgroup">
-              <input
-                type="text"
-                pInputText
-                [(ngModel)]="nomeQuestionario"
-                placeholder="Ex: Questionário de Java"
-                class="w-full"
-              />
-              <button
-                pButton
-                icon="pi pi-check"
-                label="Criar"
-                (click)="criarQuestionario()"
-                [disabled]="!nomeQuestionario || !cursoId"
-              ></button>
+      <div class="col-12 md:col-8">
+        <p-card>
+          <div class="flex flex-column md:flex-row gap-4 align-items-end">
+            <div class="flex flex-column gap-2 flex-grow-1">
+              <label class="font-bold">Nome do Questionário</label>
+              <div class="p-inputgroup">
+                <input
+                  type="text"
+                  pInputText
+                  [(ngModel)]="nomeQuestionario"
+                  placeholder="Ex: Questionário de Java"
+                  class="w-full"
+                />
+                <button
+                  pButton
+                  icon="pi pi-check"
+                  label="Criar"
+                  (click)="criarQuestionario()"
+                  [disabled]="!nomeQuestionario || !cursoId"
+                ></button>
+              </div>
+            </div>
+
+            <div class="flex flex-column gap-2 min-w-max">
+              <label class="font-bold">Curso Alvo</label>
+              <p-select
+                [options]="cursos()"
+                [(ngModel)]="cursoId"
+                optionLabel="nome"
+                optionValue="id"
+                placeholder="Selecione um curso"
+                class="w-full md:w-20rem"
+              ></p-select>
             </div>
           </div>
-
-          <div class="flex flex-column gap-2 min-w-max">
-            <label class="font-bold">Curso Alvo</label>
-            <p-select
-              [options]="cursos()"
-              [(ngModel)]="cursoId"
-              optionLabel="nome"
-              optionValue="id"
-              placeholder="Selecione um curso"
-              styleClass="w-full md:w-20rem"
-            ></p-select>
-          </div>
-        </div>
-      </p-card>
-    } @else {
-      <div class="fadein animation-duration-500">
-        <div class="flex justify-content-between align-items-center mb-4">
-          <h2>Perguntas Cadastradas</h2>
-          <p-button label="Nova Pergunta" icon="pi pi-plus" (click)="prepararNovaPergunta()" />
-        </div>
-
-        <p-card>
-          <!-- <p-table [value]="questionario().perguntas" ...> </p-table> -->
-          <p-table [value]="questionario().perguntas" [tableStyle]="{ 'min-width': '50rem' }">
-            <ng-template #header>
-              <tr>
-                <th>Enunciado</th>
-                <th>Opções</th>
-                <th style="width: 5rem">Ações</th>
-              </tr>
-            </ng-template>
-            <ng-template #body let-pergunta let-i="index">
-              <tr>
-                <td>{{ pergunta.enunciado }}</td>
-                <td>{{ pergunta.opcoes.length }}</td>
-                <td>
-                  <button
-                    pButton
-                    icon="pi pi-pencil"
-                    (click)="prepararEdicao(pergunta)"
-                    class="p-button-success"
-                  ></button>
-                </td>
-              </tr>
-            </ng-template>
-          </p-table>
         </p-card>
-        @if (exibirDialog()) {
-          <app-pergunta-dialog
-            [pergunta]="perguntaParaEnviar()"
-            (onSalvar)="
-              perguntaParaEnviar() ? salvarEditada($event) : salvarQuestionarioComPerguntas($event)
-            "
-            (onCancelar)="fecharDialog()"
-          />
-        }
+      </div>
+    } @else {
+      <div class="col-12 md:p-2">
+        <div class="fadein animation-duration-500">
+          <div class="flex flex-column md:flex-row justify-content-between gap-3 mb-4">
+            <h2 class="m-0">Perguntas Cadastradas</h2>
+            <p-button label="Nova Pergunta" icon="pi pi-plus" (click)="prepararNovaPergunta()" />
+          </div>
+
+          <p-card class="shadow-2">
+            <p-table
+              [value]="questionario().perguntas"
+              responsiveLayout="stack"
+              [breakpoint]="'980px'"
+              class="p-datatable-sm"
+            >
+              <ng-template #header>
+                <tr>
+                  <th>Enunciado</th>
+                  <th>Opções</th>
+                  <th style="width: 8rem">Ações</th>
+                </tr>
+              </ng-template>
+              <ng-template #body let-pergunta>
+                <tr>
+                  <td class="white-space-normal" style="word-break: break-word">
+                    <span class="p-column-title font-bold custom-hidden">Enunciado</span>
+                    {{ pergunta.enunciado }}
+                  </td>
+                  <td>
+                    <span class="p-column-title font-bold custom-hidden">Opções</span>
+                    {{ pergunta.opcoes.length }} opções
+                  </td>
+                  <td class="text-center">
+                    <span class="p-column-title font-bold custom-hidden jus">Ações</span>
+                    <div class="flex gap-2">
+                      <button
+                        pButton
+                        icon="pi pi-pencil"
+                        (click)="prepararEdicao(pergunta)"
+                        class="p-button-text p-button-sm"
+                      ></button>
+                      <button
+                        pButton
+                        icon="pi pi-trash"
+                        (click)="confirmarExclusao(pergunta)"
+                        class="p-button-danger p-button-text p-button-sm"
+                      ></button>
+                    </div>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </p-card>
+
+          @if (exibirDialog()) {
+            <app-pergunta-dialog
+              [pergunta]="perguntaParaEnviar()"
+              (onSalvar)="
+                perguntaParaEnviar()
+                  ? salvarEditada($event)
+                  : salvarQuestionarioComPerguntas($event)
+              "
+              (onCancelar)="fecharDialog()"
+            />
+          }
+        </div>
       </div>
     }
   </div>
 </div>
+
+<p-confirmDialog />

@@ -1,13 +1,13 @@
-import { ApplicationConfig, importProvidersFrom, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
 import { routes } from './app.routes';
-import { providePrimeNG } from 'primeng/config';
-import Aura from '@primeuix/themes/aura';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { httpInterceptor } from './seguranca/http-interceptor';
-import { environment } from '../environments/environment.development';
-import { MessageService } from 'primeng/api';
+
+import { providePrimeNG } from 'primeng/config';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import Aura from '@primeuix/themes/aura';
 
 export function tokenGetter(): string {
   return localStorage.getItem('token') ?? '';
@@ -25,6 +25,7 @@ export const appConfig: ApplicationConfig = {
                 preset: Aura,
             }
         }),
-    MessageService
+    MessageService,
+    ConfirmationService
   ]
 };

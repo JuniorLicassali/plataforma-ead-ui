@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { SafePipe } from '../safe-pipe';
+import { SafePipe } from '../../safe-pipe';
 import { AccordionModule } from 'primeng/accordion';
 import { ListboxModule } from 'primeng/listbox';
 import { ButtonModule } from 'primeng/button';
@@ -10,8 +10,8 @@ import { ButtonModule } from 'primeng/button';
   selector: 'app-conteudo-curso',
   standalone: true,
   imports: [SafePipe, AccordionModule, ListboxModule, FormsModule, ButtonModule],
-  templateUrl: './conteudo-curso.html',
-  styleUrl: './conteudo-curso.scss',
+  templateUrl: './curso-conteudo.html',
+  styleUrl: './curso-conteudo.scss',
 })
 export class ConteudoCurso {
 
