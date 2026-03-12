@@ -25,7 +25,7 @@ export class Authorized {
         this.router.navigate(['/']);
       } catch (e) {
         console.error('Erro no callback', e);
-        this.router.navigate(['/login']);
+        this.auth.login();
       }
     } else {
       this.router.navigate(['/']);

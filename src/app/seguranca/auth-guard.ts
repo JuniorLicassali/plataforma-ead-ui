@@ -16,7 +16,6 @@ export const authGuard: CanActivateFn = async (route, state) => {
       }
     } catch (e) {
       console.error('Renovação falhou, indo para login...', e);
-      auth.limparAccessToken();
       auth.login();
       return false;
     }

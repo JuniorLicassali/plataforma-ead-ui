@@ -35,10 +35,10 @@ export class AuthService {
       .replace(/\//g, '_')
       .replace(/=+$/, '');
 
-    const redirectURI = encodeURIComponent(environment.oauthCallbackUrl);
+    // const redirectURI = encodeURIComponent(environment.oauthCallbackUrl);
 
     const clientId = 'plataformaweb';
-    const scope = 'READ WRITE';
+    const scope = 'openid READ WRITE';
     const responseType = 'code';
 
     const params = new URLSearchParams({
@@ -74,8 +74,6 @@ export class AuthService {
       Authorization: environment.basicAuthToken,
     });
 
-    // return firstValueFrom(this.http.post<any>(this.oauthTokenUrl, payload, { headers }))
-
     try {
       const response = await firstValueFrom(
         this.http.post<any>(this.oauthTokenUrl, params.toString(), { headers }),
@@ -83,6 +81,12 @@ export class AuthService {
 
       this.armazenarToken(response.access_token);
       this.armazenarRefreshToken(response.refresh_token);
+
+      if (response.id_token) {
+        localStorage.setItem('id_token', response.id_token);
+        console.log('id_token salvo com sucesso');
+      }
+
     } catch (error) {
       console.error(error);
     }
@@ -181,9 +185,16 @@ export class AuthService {
   }
 
   logout() {
-    this.limparAccessToken();
+    const idToken = localStorage.getItem('id_token');
     localStorage.clear();
-    window.location.href =
-      environment.apiUrl + '/logout?returnTo=' + environment.logoutRedirectToUrl;
+
+    const params = new URLSearchParams();
+    if (idToken) params.append('id_token_hint', idToken);
+
+    params.append('post_logout_redirect_uri', environment.logoutRedirectToUrl);
+
+    const logoutUrl = `${environment.apiUrl}/connect/logout?${params.toString()}`;
+
+    window.location.href = logoutUrl;
   }
 }
