@@ -28,3 +28,67 @@ body {
     margin-right: auto;
     margin-left: auto;
 }
+
+a {
+  color: #337ab7;
+  text-decoration: none;
+}
+  
+a:hover, a:focus {
+  text-decoration: underline;
+}
+  
+a.p-button:hover,
+a.p-button:focus {
+  text-decoration: none;
+}
+
+@media screen and (max-width: 980px) {
+    .custom-hidden {
+        display: inline-block;
+        margin-right: 10px;
+    }
+
+    :host ::ng-deep .p-datatable-stack .p-datatable-tbody > tr > td {
+        display: flex !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+        text-align: right !important;
+        padding: 1rem !important;
+    }
+
+    .custom-flex-align {
+        justify-content: flex-end !important;
+    }
+}
+
+@media screen and (min-width: 981px) {
+    .custom-hidden {
+        display: none;
+    }
+
+    :host ::ng-deep .p-datatable-stack .p-datatable-tbody > tr > td {
+        display: table-cell !important;
+        text-align: left !important;
+        padding: 0.5rem 1rem !important;
+    }
+    
+    .custom-flex-align {
+        justify-content: center !important;
+    }
+}
+
+@media screen and (max-width: 980px) {
+    :host ::ng-deep .p-datatable-responsive-stack .p-datatable-tbody > tr > td {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        width: 100% !important;
+        padding: 1rem !important;
+        gap: 1rem;
+    }
+
+    .custom-flex-align {
+        margin-left: auto; 
+    }
+}

@@ -1,0 +1,78 @@
+<div class="container">
+  <div class="grid">
+    <div class="col-12 md:p-2">
+      <div class="fadein animation-duration-500">
+        <div class="flex flex-column md:flex-row justify-content-between gap-3 mb-4">
+          <h2 class="m-0">Cursos Cadastrados</h2>
+          <p-button label="Novo Curso" icon="pi pi-plus" (click)="abrirDialog()" />
+        </div>
+
+        <p-card class="shadow-2">
+          <p-table
+            [value]="cursos()"
+            responsiveLayout="stack"
+            [breakpoint]="'980px'"
+            class="p-datatable-sm"
+          >
+            <ng-template #header>
+              <tr>
+                <th>Nome</th>
+                <th>Descrição</th>
+                <th>Preço</th>
+                <th>Status</th>
+                <th style="width: 8rem">Ações</th>
+                <th>Questionario</th>
+              </tr>
+            </ng-template>
+            <ng-template #body let-curso>
+              <tr>
+                <td class="white-space-normal" style="word-break: break-word">
+                  <span class="p-column-title font-bold custom-hidden">Nome</span>
+                  {{ curso.nome }}
+                </td>
+                <td>
+                  <span class="p-column-title font-bold custom-hidden">Descrição</span>
+                  {{ curso.descricao| slice:0:30 }} {{'...'}}
+                </td>
+                <td>
+                  <span class="p-column-title font-bold custom-hidden">Preço</span>
+                  {{ curso.preco | currency: 'BRL' }}
+                </td>
+                <td>
+                  <span class="p-column-title font-bold custom-hidden">Status</span>
+                  <a
+                    href="javascript:;"
+                    [pTooltip]="curso.ativo ? 'Desativar' : 'Ativar'"
+                    tooltipPosition="top"
+                    (click)="alternarStatus(curso)"
+                  >
+                    {{ curso.ativo ? 'Ativo' : 'Inativo' }}
+                  </a>
+                </td>
+                <td class="text-center">
+                  <span class="p-column-title font-bold custom-hidden jus">Ação</span>
+                  <div class="flex gap-2">
+                    <button pButton icon="pi pi-pencil" class="p-button-text p-button-sm"></button>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <span class="p-column-title font-bold custom-hidden jus">Questionario</span>
+                  <div class="flex gap-2">
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-card>
+
+        @if (exibirDialog()) {
+          <app-curso-cadastro-dialog
+            (onSalvar)="salvar($event)"
+            (onCancelar)="exibirDialog.set(false)"
+          >
+          </app-curso-cadastro-dialog>
+        }
+      </div>
+    </div>
+  </div>
+</div>

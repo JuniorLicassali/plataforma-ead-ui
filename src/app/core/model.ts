@@ -26,9 +26,36 @@ export class PerguntaOpcao {
 
 export class CursoResumido {
   id!: number;
-  nome!: string;
+  nome?: string;
+  descricao?: string;
+  preco?: number;
+  ativo = true;
 }
 
+export class Curso {
+  id!: number;
+  nome?: string;
+  descricao?: string;
+  preco?: number;
+  ativo = true;
+
+}
+
+export class Modulo {
+  id?: string;
+	nome?: string
+	descricao?: string;
+	ordem?: number;
+	aulas = new Array<Aula>();
+}
+
+export class Aula {
+	id?: number;
+	titulo?: string;
+	descricao?: string;
+	ordem?: number;
+	urlVideo?: string;
+}
 
 
 

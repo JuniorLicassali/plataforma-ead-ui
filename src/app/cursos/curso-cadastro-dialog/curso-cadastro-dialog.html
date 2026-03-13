@@ -1,0 +1,36 @@
+<p-dialog
+  (onHide)="onCancelar.emit()"
+  [visible]="true"
+  header="Novo Curso"
+  [modal]="true"
+  [style]="{ width: '40rem' }"
+  [breakpoints]="{ '640px': '95vw' }"
+>
+  <form [formGroup]="formulario" class="flex flex-column gap-3">
+    <div class="flex flex-column gap-1">
+      <label class="font-bold">Nome do Curso</label>
+      <input pInputText formControlName="nome" placeholder="Ex: Programação Java" />
+    </div>
+
+    <div class="flex flex-column gap-1">
+      <label class="font-bold">Descrição</label>
+      <textarea
+        rows="3"
+        style="resize: none"
+        pInputTextarea
+        formControlName="descricao"
+        placeholder="Breve resumo..."
+      ></textarea>
+    </div>
+
+    <div class="flex flex-column gap-1">
+      <label class="font-bold">Preço</label>
+      <input pInputText type="number" formControlName="preco" placeholder="0.00" />
+    </div>
+
+    <div class="flex justify-content-end gap-2 mt-3">
+      <p-button label="Cancelar" (click)="onCancelar.emit()" severity="secondary" />
+      <p-button label="Salvar" (click)="salvar()" [disabled]="formulario.invalid" />
+    </div>
+  </form>
+</p-dialog>

@@ -29,8 +29,8 @@ import { TagModule } from 'primeng/tag';
     InputTextModule,
     ConfirmDialogModule,
     ToastModule,
-    TagModule
-  ],
+    TagModule,
+],
   templateUrl: './questionario-cadastro.html',
   styleUrl: './questionario-cadastro.scss',
 })
