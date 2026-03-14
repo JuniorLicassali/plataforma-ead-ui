@@ -30,6 +30,7 @@ export class CursoResumido {
   descricao?: string;
   preco?: number;
   ativo = true;
+  questionario?: Questionario | null;
 }
 
 export class Curso {
@@ -38,7 +39,8 @@ export class Curso {
   descricao?: string;
   preco?: number;
   ativo = true;
-
+  modulo = new Array<Modulo>();
+  questionario = new Array<Questionario>();
 }
 
 export class Modulo {
@@ -61,24 +63,6 @@ export class Aula {
 
 
 
-
-// export class QuestionarioCadastroProf {
-//     id!: number;
-//     descricao!: string;
-//     ativo!: boolean;
-//     perguntas: PerguntaCadastro[] = [];
-// }
-
-// export class PerguntaCadastro {
-//     id!: number;
-//     enunciado!: string;
-//     opcoes: PerguntaOpcaoCadastro[] = [];
-// }
-
-// export class PerguntaOpcaoCadastro {
-//     texto!: string;
-//     // isCorreta: boolean = false;
-// }
 
 export interface PerguntaOpcaoCadastro {
   texto: string;

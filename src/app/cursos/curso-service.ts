@@ -17,8 +17,12 @@ export class CursoService {
     return firstValueFrom(this.http.get<Curso>(`${this.URL}/${codigo}`));
   }
 
-  listar(): Promise<CursoResumido[]> {
+  listarResumido(): Promise<CursoResumido[]> {
     return firstValueFrom(this.http.get<CursoResumido[]>(this.URL));
+  }
+
+  listar(): Promise<Curso[]> {
+    return firstValueFrom(this.http.get<Curso[]>(this.URL));
   }
 
   ativar(codigo: number): Promise<void> {
@@ -29,11 +33,11 @@ export class CursoService {
     return firstValueFrom(this.http.delete<void>(`${this.URL}/${codigo}/ativo`, {}));
   }
 
-  adicionar(curso: CursoResumido): Promise<CursoResumido> {
+  adicionar(curso: Curso): Promise<Curso> {
     return firstValueFrom(this.http.post<Curso>(this.URL, curso));
   }
 
-  atualizar(codigo: number, curso: CursoResumido): Promise<CursoResumido> {
+  atualizar(codigo: number, curso: Curso): Promise<Curso> {
     return firstValueFrom(this.http.put<Curso>(`${this.URL}/${codigo}`, curso));
   }
 

@@ -8,44 +8,42 @@ import { firstValueFrom } from 'rxjs';
   providedIn: 'root',
 })
 export class QuestionarioService {
-
   questionariosUrl!: string;
 
   private http = inject(HttpClient);
   private readonly URL = `${environment.apiUrl}/cursos`;
 
-  async buscarCursos(): Promise<CursoResumido[]> {
-    const dados = await firstValueFrom(this.http.get<any[]>(this.URL));
-
-    return dados.map(item => {
-      const curso = new CursoResumido();
-      curso.id = item.id;
-      curso.nome = item.nome;
-      return curso;
-      
-    })
+  listar(): Promise<CursoResumido[]> {
+    return firstValueFrom(this.http.get<CursoResumido[]>(this.URL));
   }
 
   buscarPorCodigo(cursoId: number, questionarioId: number): Promise<QuestionarioCadastroProf> {
-
-    return firstValueFrom(
-      this.http.get<QuestionarioCadastroProf>(`${this.URL}/${cursoId}/questionarios/${questionarioId}`));
+    return firstValueFrom(this.http.get<QuestionarioCadastroProf>(
+      `${this.URL}/${cursoId}/questionarios/${questionarioId}`, ));
   }
 
-
-  adicionar(questionario: any, cursoId: number): Promise<QuestionarioCadastroProf>{
+  adicionar(questionario: any, cursoId: number): Promise<QuestionarioCadastroProf> {
     const url = `${this.URL}/${cursoId}/questionarios`;
 
     return firstValueFrom(this.http.post<QuestionarioCadastroProf>(url, questionario));
   }
 
-  adicionarPergunta(questionario: any, cursoId: number, questionarioId: number): Promise<QuestionarioCadastroProf> {
+  adicionarPergunta(
+    questionario: any,
+    cursoId: number,
+    questionarioId: number,
+  ): Promise<QuestionarioCadastroProf> {
     const url = `${this.URL}/${cursoId}/questionarios/${questionarioId}`;
 
     return firstValueFrom(this.http.post<QuestionarioCadastroProf>(url, questionario));
   }
 
-  editarPergunta(pergunta: any, cursoId: number, questionarioId: number, perguntaId: number): Promise<QuestionarioCadastroProf> {
+  editarPergunta(
+    pergunta: any,
+    cursoId: number,
+    questionarioId: number,
+    perguntaId: number,
+  ): Promise<QuestionarioCadastroProf> {
     const url = `${this.URL}/${cursoId}/questionarios/${questionarioId}/perguntas/${perguntaId}`;
 
     return firstValueFrom(this.http.put<QuestionarioCadastroProf>(url, pergunta));
@@ -56,9 +54,4 @@ export class QuestionarioService {
 
     return firstValueFrom(this.http.delete<void>(url));
   }
-
-
-
-
-
 }

@@ -1,46 +1,89 @@
-<div class="container mt-5 px-4">
+<div class="container">
   <h2 class="font-bold mb-4 text-900">
     {{ !modoEdicao ? 'NOVO QUESTIONÁRIO' : 'EDIÇÃO DE PERGUNTAS' }}
   </h2>
 
   <div class="grid">
     @if (!modoEdicao) {
-      <div class="col-12 md:col-8">
-        <p-card>
-          <div class="flex flex-column md:flex-row gap-4 align-items-end">
-            <div class="flex flex-column gap-2 flex-grow-1">
-              <label class="font-bold">Nome do Questionário</label>
-              <div class="p-inputgroup">
-                <input
-                  type="text"
-                  pInputText
-                  [(ngModel)]="nomeQuestionario"
-                  placeholder="Ex: Questionário de Java"
+      <div class="col-12 grid">
+        <div class="col-12">
+          <p-card class="block mb-4">
+            <div class="grid align-items-end">
+              <div class="col-12 md:col-8">
+                <label class="font-bold block mb-2">Nome do Questionário</label>
+                <div class="p-inputgroup">
+                  <input
+                    type="text"
+                    pInputText
+                    [(ngModel)]="nomeQuestionario"
+                    placeholder="Ex: Introdução ao Java"
+                  />
+                  <button
+                    pButton
+                    icon="pi pi-check"
+                    label="Criar Questionário"
+                    (click)="criarQuestionario()"
+                    [disabled]="!nomeQuestionario || !cursoId"
+                  ></button>
+                </div>
+              </div>
+
+              <div class="col-12 md:col-4">
+                <label class="font-bold block mb-2">Curso Alvo</label>
+                <p-select
+                  [options]="cursos()"
+                  [(ngModel)]="cursoId"
+                  optionLabel="nome"
+                  optionValue="id"
+                  placeholder="Selecione um curso"
                   class="w-full"
-                />
-                <button
-                  pButton
-                  icon="pi pi-check"
-                  label="Criar"
-                  (click)="criarQuestionario()"
-                  [disabled]="!nomeQuestionario || !cursoId"
-                ></button>
+                ></p-select>
               </div>
             </div>
+          </p-card>
+        </div>
 
-            <div class="flex flex-column gap-2 min-w-max">
-              <label class="font-bold">Curso Alvo</label>
-              <p-select
-                [options]="cursos()"
-                [(ngModel)]="cursoId"
-                optionLabel="nome"
-                optionValue="id"
-                placeholder="Selecione um curso"
-                class="w-full md:w-20rem"
-              ></p-select>
-            </div>
-          </div>
-        </p-card>
+        <div class="col-12">
+          <p-card class="shadow-1">
+            <h3 class="mt-0 mb-3">Questionários Cadastrados</h3>
+            <p-table
+              [value]="questionariosParaExibir()"
+              [paginator]="true"
+              [rows]="10"
+              class="p-datatable-sm"
+            >
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>Descricao</th>
+                  <th>Curso</th>
+                  <th class="text-center" style="width: 100px">Ações</th>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="body" let-q>
+                <tr>
+                  <td>{{ q.questionarioDescricao }}</td>
+                  <td>{{ q.cursoNome }}</td>
+                  <td class="text-center">
+                    <button
+                      pButton
+                      icon="pi pi-pencil"
+                      class="p-button-rounded p-button-text"
+                      pTooltip="Editar"
+                      [routerLink]="['/cursos', q.cursoId, 'questionarios', q.questionarioId]"
+                    ></button>
+                  </td>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td colspan="3" class="text-center">Nenhum questionário encontrado.</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </p-card>
+        </div>
       </div>
     } @else {
       <div class="col-12 md:p-2">

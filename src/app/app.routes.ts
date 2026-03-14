@@ -13,9 +13,9 @@ export const routes: Routes = [
     { path: 'checkout', component: Checkout, canActivate: [authGuard] },
     { path: 'conteudo', component: ConteudoCurso, canActivate: [authGuard] },
     { path: 'questionario', component: Questionario, canActivate: [authGuard] },
-    { path: 'questionarios', component: QuestionarioCadastro, canActivate: [authGuard] },
     { path: 'cursos/:cursoId/questionarios/:questionarioId', component: QuestionarioCadastro, canActivate: [authGuard] },
     { path: 'admin/cursos', component: CursoCadastro, canActivate: [authGuard] },
+     { path: 'admin/questionarios', component: QuestionarioCadastro, canActivate: [authGuard] },
     
     { path: '', redirectTo: 'conteudo', pathMatch: 'full' },
     { path: 'authorized', component: Authorized }

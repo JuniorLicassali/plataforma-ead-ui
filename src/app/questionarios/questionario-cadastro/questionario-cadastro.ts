@@ -1,13 +1,13 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 
 import { ButtonModule } from 'primeng/button';
 
 import { SelectModule } from 'primeng/select';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
-import { CursoResumido, PerguntaCadastro, QuestionarioCadastroProf } from '../../core/model';
+import { Curso, CursoResumido, PerguntaCadastro, QuestionarioCadastroProf } from '../../core/model';
 import { QuestionarioService } from '../questionario-service';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { InputTextModule } from 'primeng/inputtext';
@@ -30,7 +30,8 @@ import { TagModule } from 'primeng/tag';
     ConfirmDialogModule,
     ToastModule,
     TagModule,
-],
+    RouterLink,
+  ],
   templateUrl: './questionario-cadastro.html',
   styleUrl: './questionario-cadastro.scss',
 })
@@ -75,12 +76,25 @@ export class QuestionarioCadastro implements OnInit {
 
   async carregarCursos() {
     try {
-      const dados = await this.questionarioService.buscarCursos();
+      const dados = await this.questionarioService.listar();
+      console.log(dados);
       this.cursos.set(dados);
+      console.log(this.cursos());
     } catch (error) {
       console.log('Erro ao carregar cursos:', error);
     }
   }
+
+  questionariosParaExibir = computed(() => {
+    return this.cursos()
+      .filter((curso) => curso.questionario && curso.questionario.id)
+      .map((curso) => ({
+        cursoNome: curso.nome,
+        cursoId: curso.id,
+        questionarioDescricao: curso.questionario!.descricao || 'Sem título',
+        questionarioId: curso.questionario!.id,
+      }));
+  });
 
   criarQuestionario() {
     const payload = {
@@ -160,32 +174,42 @@ export class QuestionarioCadastro implements OnInit {
       header: 'Atenção',
       icon: 'pi pi-info-circle',
       rejectButtonProps: {
-                label: 'Cancelar',
-                severity: 'secondary',
-                outlined: true
-            },
-            acceptButtonProps: {
-                label: 'Excluir',
-                severity: 'danger'
-            },
+        label: 'Cancelar',
+        severity: 'secondary',
+        outlined: true,
+      },
+      acceptButtonProps: {
+        label: 'Excluir',
+        severity: 'danger',
+      },
       accept: () => {
         this.excluirPergunta(pergunta);
       },
       reject: () => {
-                this.messageService.add({ severity: 'error', summary: 'Rejeitado', detail: 'Você rejeitou' });
-            }
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Rejeitado',
+          detail: 'Você rejeitou',
+        });
+      },
     });
   }
 
   excluirPergunta(pergunta: PerguntaCadastro) {
-    this.questionarioService.excluirPergunta(this.cursoId, this.questionarioId, pergunta.id)
+    this.questionarioService
+      .excluirPergunta(this.cursoId, this.questionarioId, pergunta.id)
       .then(() => {
-        this.questionario().perguntas = this.questionario().perguntas
-          .filter(p => p.id !== pergunta.id);
+        this.questionario().perguntas = this.questionario().perguntas.filter(
+          (p) => p.id !== pergunta.id,
+        );
 
-        this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Pergunta deletada' });
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Confirmado',
+          detail: 'Pergunta deletada',
+        });
       })
-      .catch((error) => this.errorHandler.handle(error))
+      .catch((error) => this.errorHandler.handle(error));
   }
 
   fecharDialog() {

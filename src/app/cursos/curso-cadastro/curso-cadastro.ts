@@ -1,10 +1,10 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 
 import { ButtonModule } from 'primeng/button';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Card } from "primeng/card";
 import { TableModule } from "primeng/table";
-import { CursoResumido } from '../../core/model';
+import { Curso, CursoResumido } from '../../core/model';
 import { CursoService } from '../curso-service';
 import { MessageService } from 'primeng/api';
 import { ErrorHandlerService } from '../../core/error-handler-service';
@@ -14,13 +14,13 @@ import { CurrencyPipe, SlicePipe } from '@angular/common';
 
 @Component({
   selector: 'app-cursos-cadastrar',
-  imports: [ButtonModule, Card, TableModule, CursoCadastroDialog, TooltipModule, CurrencyPipe, SlicePipe],
+  imports: [ButtonModule, Card, TableModule, CursoCadastroDialog, TooltipModule, CurrencyPipe, SlicePipe, RouterLink],
   templateUrl: './curso-cadastro.html',
   styleUrl: './curso-cadastro.scss',
 })
 export class CursoCadastro implements OnInit {
 
-  cursos = signal<CursoResumido[]>([]);
+  cursos = signal<Curso[]>([]);
   exibirDialog = signal(false);
   temQuestionario = signal(false);
 
@@ -39,7 +39,7 @@ export class CursoCadastro implements OnInit {
     console.log(this.exibirDialog());
   }
 
-  salvar(curso: CursoResumido) {
+  salvar(curso: Curso) {
     console.log('Foi');
 
     this.cursoService.adicionar(curso)
@@ -76,9 +76,5 @@ export class CursoCadastro implements OnInit {
       .catch(erro => this.errorHandler.handle(erro));
   
   }
-
-  // verificarQuestionarioExistente(curso: CursoResumido) {
-  //   if (curso.)
-  // }
 
 }

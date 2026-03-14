@@ -1,10 +1,18 @@
 <div class="container">
   <div class="grid">
-    <div class="col-12 md:p-2">
+    <div class="col-12 mb-4">
       <div class="fadein animation-duration-500">
         <div class="flex flex-column md:flex-row justify-content-between gap-3 mb-4">
           <h2 class="m-0">Cursos Cadastrados</h2>
-          <p-button label="Novo Curso" icon="pi pi-plus" (click)="abrirDialog()" />
+          <div class="flex flex-column md:flex-row justify-content-between gap-3 mb-4">
+            <p-button label="Novo Curso" icon="pi pi-plus" (click)="abrirDialog()" />
+            <p-button
+              label="Gerenciar Questionarios"
+              icon="pi pi-plus"
+              [routerLink]="['/admin/questionarios']"
+              severity="info"
+            />
+          </div>
         </div>
 
         <p-card class="shadow-2">
@@ -20,8 +28,6 @@
                 <th>Descrição</th>
                 <th>Preço</th>
                 <th>Status</th>
-                <th style="width: 8rem">Ações</th>
-                <th>Questionario</th>
               </tr>
             </ng-template>
             <ng-template #body let-curso>
@@ -32,7 +38,7 @@
                 </td>
                 <td>
                   <span class="p-column-title font-bold custom-hidden">Descrição</span>
-                  {{ curso.descricao| slice:0:30 }} {{'...'}}
+                  {{ curso.descricao | slice: 0 : 30 }} {{ '...' }}
                 </td>
                 <td>
                   <span class="p-column-title font-bold custom-hidden">Preço</span>
@@ -48,17 +54,6 @@
                   >
                     {{ curso.ativo ? 'Ativo' : 'Inativo' }}
                   </a>
-                </td>
-                <td class="text-center">
-                  <span class="p-column-title font-bold custom-hidden jus">Ação</span>
-                  <div class="flex gap-2">
-                    <button pButton icon="pi pi-pencil" class="p-button-text p-button-sm"></button>
-                  </div>
-                </td>
-                <td class="text-center">
-                  <span class="p-column-title font-bold custom-hidden jus">Questionario</span>
-                  <div class="flex gap-2">
-                  </div>
                 </td>
               </tr>
             </ng-template>
