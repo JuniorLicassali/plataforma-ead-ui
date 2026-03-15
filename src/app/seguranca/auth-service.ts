@@ -37,8 +37,8 @@ export class AuthService {
 
     // const redirectURI = encodeURIComponent(environment.oauthCallbackUrl);
 
-    const clientId = 'plataformaweb';
-    const scope = 'openid READ WRITE';
+    const clientId = environment.oauth.clientId;
+    const scope = environment.oauth.scope;
     const responseType = 'code';
 
     const params = new URLSearchParams({
@@ -71,7 +71,7 @@ export class AuthService {
 
     const headers = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded',
-      Authorization: environment.basicAuthToken,
+      Authorization: environment.oauth.basicAuthToken,
     });
 
     try {
@@ -185,16 +185,13 @@ export class AuthService {
   }
 
   logout() {
-    const idToken = localStorage.getItem('id_token');
-    localStorage.clear();
+  localStorage.clear();
 
-    const params = new URLSearchParams();
-    if (idToken) params.append('id_token_hint', idToken);
+  const clientId = environment.oauth.clientId;
+  const redirectUri = encodeURIComponent(environment.logoutRedirectToUrl);
+  
+  const logoutUrl = `${environment.apiUrl}/logout?client_id=${clientId}&post_logout_redirect_uri=${redirectUri}`;
 
-    params.append('post_logout_redirect_uri', environment.logoutRedirectToUrl);
-
-    const logoutUrl = `${environment.apiUrl}/connect/logout?${params.toString()}`;
-
-    window.location.href = logoutUrl;
-  }
+  window.location.href = logoutUrl;
+}
 }
