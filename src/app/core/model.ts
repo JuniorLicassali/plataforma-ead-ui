@@ -1,64 +1,84 @@
-export class QuestionarioUsuario {
-    id!: number;
-    questionario = new Questionario();
-    dataAbertura!: Date;
-    dataFechamento!: Date;
-    finalizado!: boolean;
+export interface QuestionarioUsuario {
+  id: number;
+  questionario: Questionario;
+  dataAbertura: Date;
+  dataFechamento: Date;
+  finalizado: boolean;
 }
 
-export class Questionario {
-    id!: number;
-    descricao!: string;
-    ativo: boolean = true;
-    perguntas = new Array<Pergunta>();
+export interface Questionario {
+  id: number;
+  descricao: string;
+  ativo: boolean;
+  perguntas: Pergunta[];
 }
 
-export class Pergunta {
-    id!: number;
-    enunciado!: string;
-    respostaSelecionada: string | null = null;
-    opcoes = new Array<PerguntaOpcao>();
+export interface Pergunta {
+  id: number;
+  enunciado: string;
+  respostaSelecionada: string | null;
+  opcoes: PerguntaOpcao[];
 }
 
-export class PerguntaOpcao {
-    texto!: string;
+export interface PerguntaOpcao {
+  texto: string;
 }
 
-export class CursoResumido {
-  id!: number;
+export interface CursoResumido {
+  id: number;
   nome?: string;
   descricao?: string;
   preco?: number;
-  ativo = true;
+  ativo: boolean;
   questionario?: Questionario | null;
 }
 
-export class Curso {
-  id!: number;
+export interface Curso extends CursoResumido {
+  modulos: Modulo[];
+  questionario: Questionario | null;
+}
+
+export interface Modulo {
+  id?: string;
   nome?: string;
   descricao?: string;
-  preco?: number;
-  ativo = true;
-  modulo = new Array<Modulo>();
-  questionario = new Array<Questionario>();
+  ordem?: number;
+  aulas: Aula[];
 }
 
-export class Modulo {
-  id?: string;
-	nome?: string
-	descricao?: string;
-	ordem?: number;
-	aulas = new Array<Aula>();
+export interface Aula {
+  id?: number;
+  titulo?: string;
+  descricao?: string;
+  ordem?: number;
+  urlVideo?: string;
 }
 
-export class Aula {
-	id?: number;
-	titulo?: string;
-	descricao?: string;
-	ordem?: number;
-	urlVideo?: string;
+export interface Matricula {
+  id?: number;
+  usuarioId?: number;
+  cursoId?: number;
+  dataMatricula?: Date;
+  statusMatricula?: string;
 }
 
+export interface Pagamento {
+  id: number;
+  matricula: Matricula;
+  dataCriacao: string;
+  preco: number;
+  statusPagamento: string;
+  metodoPagamento: string;
+  asaasInvoiceUrl: string;
+}
+
+export class Page<T> {
+  content: T[] = [];
+  totalElements: number = 0;
+  totalPages: number = 0;
+  size: number = 0;
+  number: number = 0;
+}
 
 
 

@@ -5,8 +5,8 @@ import { Router, RouterLink } from '@angular/router';
 import { Card } from "primeng/card";
 import { TableModule } from "primeng/table";
 import { Curso, CursoResumido } from '../../core/model';
-import { CursoService } from '../curso-service';
-import { MessageService } from 'primeng/api';
+import { CursoFiltro, CursoService } from '../curso-service';
+import { LazyLoadEvent, MessageService } from 'primeng/api';
 import { ErrorHandlerService } from '../../core/error-handler-service';
 import { CursoCadastroDialog } from '../curso-cadastro-dialog/curso-cadastro-dialog';
 import { TooltipModule } from 'primeng/tooltip';
@@ -20,7 +20,12 @@ import { CurrencyPipe, SlicePipe } from '@angular/common';
 })
 export class CursoCadastro implements OnInit {
 
-  cursos = signal<Curso[]>([]);
+  cursos = signal<CursoResumido[]>([]);
+
+  filtro = new CursoFiltro();
+  totalRegistros = signal<number>(0);
+
+
   exibirDialog = signal(false);
   temQuestionario = signal(false);
 
@@ -30,7 +35,7 @@ export class CursoCadastro implements OnInit {
   private errorHandler = inject(ErrorHandlerService);
 
   ngOnInit() {
-    this.carregarCursos();
+    this.listar();
   }
 
   abrirDialog() {
@@ -55,10 +60,21 @@ export class CursoCadastro implements OnInit {
       .catch((erro) => this.errorHandler.handle(erro));
   }
 
-  carregarCursos() {
-    this.cursoService.listar().then(dados => {
-      this.cursos.set(dados);
-    });
+  listar(pagina: number = 0): void {
+    this.filtro.pagina = pagina;
+
+    this.cursoService
+      .listarResumido(this.filtro)
+      .then((res: any) => {
+        this.cursos.set(res.content);
+        this.totalRegistros.set(res.totalElements);
+      })
+      .catch((erro) => this.errorHandler.handle(erro));
+  }
+
+  aoMudarPagina(event: LazyLoadEvent) {
+    const pagina = event!.first! / event!.rows!;
+    this.listar(pagina);
   }
 
   alternarStatus(curso: CursoResumido) {

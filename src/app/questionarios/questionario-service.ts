@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { CursoResumido, QuestionarioCadastroProf } from '../core/model';
@@ -13,8 +13,8 @@ export class QuestionarioService {
   private http = inject(HttpClient);
   private readonly URL = `${environment.apiUrl}/cursos`;
 
-  listar(): Promise<CursoResumido[]> {
-    return firstValueFrom(this.http.get<CursoResumido[]>(this.URL));
+  listarTodos(): Promise<CursoResumido[]> {
+    return firstValueFrom(this.http.get<any>(`${this.URL}?size=999`)).then(res => res.content as CursoResumido[]);
   }
 
   buscarPorCodigo(cursoId: number, questionarioId: number): Promise<QuestionarioCadastroProf> {
@@ -28,22 +28,13 @@ export class QuestionarioService {
     return firstValueFrom(this.http.post<QuestionarioCadastroProf>(url, questionario));
   }
 
-  adicionarPergunta(
-    questionario: any,
-    cursoId: number,
-    questionarioId: number,
-  ): Promise<QuestionarioCadastroProf> {
+  adicionarPergunta(questionario: any, cursoId: number, questionarioId: number): Promise<QuestionarioCadastroProf> {
     const url = `${this.URL}/${cursoId}/questionarios/${questionarioId}`;
 
     return firstValueFrom(this.http.post<QuestionarioCadastroProf>(url, questionario));
   }
 
-  editarPergunta(
-    pergunta: any,
-    cursoId: number,
-    questionarioId: number,
-    perguntaId: number,
-  ): Promise<QuestionarioCadastroProf> {
+  editarPergunta(pergunta: any, cursoId: number, questionarioId: number, perguntaId: number): Promise<QuestionarioCadastroProf> {
     const url = `${this.URL}/${cursoId}/questionarios/${questionarioId}/perguntas/${perguntaId}`;
 
     return firstValueFrom(this.http.put<QuestionarioCadastroProf>(url, pergunta));

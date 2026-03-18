@@ -76,7 +76,7 @@ export class QuestionarioCadastro implements OnInit {
 
   async carregarCursos() {
     try {
-      const dados = await this.questionarioService.listar();
+      const dados = await this.questionarioService.listarTodos();
       console.log(dados);
       this.cursos.set(dados);
       console.log(this.cursos());

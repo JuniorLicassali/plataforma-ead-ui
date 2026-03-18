@@ -1,101 +1,41 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AccordionModule } from 'primeng/accordion';
 import { ListboxModule } from 'primeng/listbox';
 import { ButtonModule } from 'primeng/button';
+import { ActivatedRoute } from '@angular/router';
+import { CursoService } from '../curso-service';
+import { Aula, Curso, Modulo } from '../../core/model';
+import { ErrorHandlerService } from '../../core/error-handler-service';
 
 @Component({
-  selector: 'app-conteudo-curso',
+  selector: 'app-curso-conteudo',
   standalone: true,
   imports: [AccordionModule, ListboxModule, FormsModule, ButtonModule],
   templateUrl: './curso-conteudo.html',
   styleUrl: './curso-conteudo.scss',
 })
-export class ConteudoCurso implements OnInit, AfterViewInit {
-  modulos: any[] = [];
-  aulaSelecionada: any;
-  urlVideo: string = '';
+export class CursoConteudo implements OnInit, AfterViewInit {
+  
   ultimoValorValido: any;
+  urlVideo: string = '';
+  cursoId!: number;
+
+  curso = signal<Curso>({} as Curso);
+  modulos = signal<Modulo[]>([]);
+  aulaSelecionada = signal<Aula>({} as Aula);
 
   fimVideo = false;
   @ViewChild('videoPlayer') videoElement?: ElementRef<HTMLVideoElement>;
 
-  ngOnInit() {
-    this.modulos = [
-      {
-        id: 1,
-        nome: 'Módulo 01: Configuração e Setup',
-        descricao: 'Preparando o ambiente de desenvolvimento',
-        ordem: 1,
-        aulas: [
-          {
-            id: 101,
-            titulo: 'Instalação do JDK e Maven',
-            descricao: 'Configurando variáveis de ambiente',
-            ordem: 1,
-            urlVideo:
-              'https://res.cloudinary.com/teste-jr/video/upload/v1773418942/qwnqgyu1urnq1xyw7uaw.mp4',
-          },
-          {
-            id: 102,
-            titulo: 'Spring Initializr',
-            descricao: 'Criando o projeto base',
-            ordem: 2,
-            urlVideo: 'https://www.youtube.com/embed/2RxDxpV59fM?list=RD2RxDxpV59fM',
-          },
-        ],
-      },
-      {
-        id: 2,
-        nome: 'Módulo 02: REST e Controllers',
-        descricao: 'Criação de endpoints e verbos HTTP',
-        ordem: 2,
-        aulas: [
-          {
-            id: 201,
-            titulo: 'Criando @RestController',
-            descricao: 'Mapeando as primeiras rotas',
-            ordem: 1,
-            urlVideo:
-              'https://res.cloudinary.com/teste-jr/video/upload/v1773418942/qwnqgyu1urnq1xyw7uaw.mp4',
-          },
-          {
-            id: 202,
-            titulo: 'Request Body e Response Entity',
-            descricao: 'Manipulando entradas e saídas',
-            ordem: 2,
-            urlVideo:
-              'https://res.cloudinary.com/teste-jr/video/upload/v1773418942/qwnqgyu1urnq1xyw7uaw.mp4',
-          },
-        ],
-      },
-      {
-        id: 3,
-        nome: 'Módulo 03: Banco de Dados com JPA',
-        descricao: 'Persistência de dados e mapeamento relacional',
-        ordem: 3,
-        aulas: [
-          {
-            id: 301,
-            titulo: 'Mapeando Entidades',
-            descricao: 'Uso de @Entity, @Id e @Column',
-            ordem: 1,
-            urlVideo:
-              'https://res.cloudinary.com/teste-jr/video/upload/v1773418942/qwnqgyu1urnq1xyw7uaw.mp4',
-          },
-          {
-            id: 302,
-            titulo: 'Interfaces Repository',
-            descricao: 'Extendendo JpaRepository',
-            ordem: 2,
-            urlVideo:
-              'https://res.cloudinary.com/teste-jr/video/upload/v1773418942/qwnqgyu1urnq1xyw7uaw.mp4',
-          },
-        ],
-      },
-    ];
+  private route = inject(ActivatedRoute);
+  private cursoService = inject(CursoService);
+  private errorHandler = inject(ErrorHandlerService);
 
-    this.inicializarAulaPadrao();
+  ngOnInit() {
+    this.cursoId = Number(this.route.snapshot.paramMap.get('cursoId'));
+
+    this.buscarCurso(this.cursoId);
 
     this.iniciarEscutaDeVideo();
   }
@@ -108,16 +48,29 @@ export class ConteudoCurso implements OnInit, AfterViewInit {
 
   onAulaChange(event: any) {
     if (event.value) {
-      this.urlVideo = event.value.urlVideo;
+      this.urlVideo = event.value.urlVideo ?? '';
       this.ultimoValorValido = event.value;
     } else {
-      this.aulaSelecionada = { ...this.ultimoValorValido };
+      this.aulaSelecionada.set({ ...this.ultimoValorValido });
     }
   }
 
   finalizarAula() {
     this.fimVideo = true;
     console.log('finalizaou');
+  }
+
+  buscarCurso(id: number){
+    this.cursoService.buscarPorCodigo(id)
+      .then((res => {
+        this.curso.set(res);
+        this.modulos.set(res.modulos);
+
+        this.inicializarAulaPadrao();
+      }))
+      .catch((erro) => {
+        this.errorHandler.handle(erro);
+      });
   }
 
   private iniciarEscutaDeVideo() {
@@ -129,10 +82,14 @@ export class ConteudoCurso implements OnInit, AfterViewInit {
   }
 
   private inicializarAulaPadrao() {
-    if (this.modulos.length > 0 && this.modulos[0].aulas.length > 0) {
-      this.aulaSelecionada = this.modulos[0].aulas[0];
-      this.urlVideo = this.aulaSelecionada.urlVideo;
-      this.ultimoValorValido = this.aulaSelecionada;
+    const listaModulos = this.modulos();
+
+    if (listaModulos.length > 0 && listaModulos[0].aulas?.length > 0) {
+      const primeiraAula = listaModulos[0].aulas[0];
+
+      this.aulaSelecionada.set(primeiraAula);
+      this.urlVideo = primeiraAula.urlVideo ?? '';
+      this.ultimoValorValido = primeiraAula;
     }
   }
 }

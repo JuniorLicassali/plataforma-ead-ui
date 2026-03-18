@@ -18,7 +18,7 @@ export class Navbar {
 
   ngOnInit() {
     this.items = [
-      { label: 'Meus Cursos', icon: 'pi pi-book', routerLink: '/cursos' },
+      { label: 'Meus Cursos', icon: 'pi pi-book', routerLink: '/cursos/matriculados' },
       { label: 'Adicionar Curso', icon: 'pi pi-plus', routerLink: '/admin/cursos' },
       { separator: true },
       { label: 'Sair', icon: 'pi pi-sign-out', command: () => this.logout() }

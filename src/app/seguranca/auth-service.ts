@@ -158,17 +158,27 @@ export class AuthService {
     this.jwtPayload.set(null);
   }
 
-  public armazenarToken(token: string) {
+  armazenarToken(token: string) {
     this.jwtPayload.set(this.decodificarToken(token));
     localStorage.setItem('token', token);
   }
 
-  public carregarToken() {
+  carregarToken() {
     const token = localStorage.getItem('token');
 
     if (token) {
       this.armazenarToken(token);
     }
+  }
+
+  getUsuarioId() {
+    const token = localStorage.getItem('token');
+    if(!token) {
+      return null;
+    }
+
+    const payload = this.decodificarToken(token);
+    return payload ? Number(payload.usuario_id) : null;
   }
 
   private armazenarRefreshToken(refreshToken: string) {
