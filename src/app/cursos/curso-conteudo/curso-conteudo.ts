@@ -1,9 +1,17 @@
-import { AfterViewInit, Component, ElementRef, inject, OnInit, signal, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  inject,
+  OnInit,
+  signal,
+  ViewChild,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AccordionModule } from 'primeng/accordion';
 import { ListboxModule } from 'primeng/listbox';
 import { ButtonModule } from 'primeng/button';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CursoService } from '../curso-service';
 import { Aula, Curso, Modulo } from '../../core/model';
 import { ErrorHandlerService } from '../../core/error-handler-service';
@@ -16,7 +24,6 @@ import { ErrorHandlerService } from '../../core/error-handler-service';
   styleUrl: './curso-conteudo.scss',
 })
 export class CursoConteudo implements OnInit, AfterViewInit {
-  
   ultimoValorValido: any;
   urlVideo: string = '';
   cursoId!: number;
@@ -25,10 +32,13 @@ export class CursoConteudo implements OnInit, AfterViewInit {
   modulos = signal<Modulo[]>([]);
   aulaSelecionada = signal<Aula>({} as Aula);
 
+  activeIndex = signal<number>(0);
+
   fimVideo = false;
   @ViewChild('videoPlayer') videoElement?: ElementRef<HTMLVideoElement>;
 
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private cursoService = inject(CursoService);
   private errorHandler = inject(ErrorHandlerService);
 
@@ -48,26 +58,30 @@ export class CursoConteudo implements OnInit, AfterViewInit {
 
   onAulaChange(event: any) {
     if (event.value) {
-      this.urlVideo = event.value.urlVideo ?? '';
-      this.ultimoValorValido = event.value;
+      this.mudarAula(event.value);
     } else {
       this.aulaSelecionada.set({ ...this.ultimoValorValido });
     }
   }
 
   finalizarAula() {
-    this.fimVideo = true;
-    console.log('finalizaou');
+    const proxima = this.cursoService.getProximaAula(this.aulaSelecionada().id!);
+    if (proxima) {
+      this.mudarAula(proxima);
+    } else {
+      console.log('Curso finalizado!');
+    }
   }
 
-  buscarCurso(id: number){
-    this.cursoService.buscarPorCodigo(id)
-      .then((res => {
+  buscarCurso(id: number) {
+    this.cursoService
+      .buscarPorCodigo(id)
+      .then((res) => {
         this.curso.set(res);
         this.modulos.set(res.modulos);
 
         this.inicializarAulaPadrao();
-      }))
+      })
       .catch((erro) => {
         this.errorHandler.handle(erro);
       });
@@ -87,9 +101,31 @@ export class CursoConteudo implements OnInit, AfterViewInit {
     if (listaModulos.length > 0 && listaModulos[0].aulas?.length > 0) {
       const primeiraAula = listaModulos[0].aulas[0];
 
-      this.aulaSelecionada.set(primeiraAula);
-      this.urlVideo = primeiraAula.urlVideo ?? '';
-      this.ultimoValorValido = primeiraAula;
+      this.mudarAula(primeiraAula);
     }
   }
+
+  private mudarAula(aula: Aula) {
+    this.aulaSelecionada.set(aula);
+    this.urlVideo = aula.urlVideo ?? '';
+    this.ultimoValorValido = aula;
+    this.fimVideo = false;
+
+    this.router.navigate(['/cursos', this.cursoId, 'aula', aula.id]);
+
+    const modulo = this.cursoService.getModuloDaAula(aula.id!);
+    if (modulo) {
+      const index = this.modulos().findIndex((m) => m.id === modulo.id);
+      if (index !== -1) {
+        this.activeIndex.set(index);
+      }
+    }
+
+    if (this.videoElement) {
+      const video = this.videoElement.nativeElement;
+      video.load();
+      video.play();
+    }
+  }
+  
 }

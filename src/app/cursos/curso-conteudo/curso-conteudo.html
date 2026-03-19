@@ -39,7 +39,7 @@
     </div>
 
     <div class="col-12 md:col-4">
-      <p-accordion [value]="0">
+      <p-accordion [value]="activeIndex()">
         @for (modulo of modulos(); track modulo.id; let i = $index) {
           <p-accordion-panel [value]="i">
             <p-accordion-header>{{ modulo.nome }}</p-accordion-header>
