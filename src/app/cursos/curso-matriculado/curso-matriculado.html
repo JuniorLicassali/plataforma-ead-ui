@@ -1,0 +1,62 @@
+<div class="container p-4">
+  <div class="flex justify-content-between align-items-center mb-5">
+    <div>
+      <h2 class="text-900 font-bold m-0">Meus Cursos</h2>
+      <p class="text-600">Continue de onde você parou</p>
+    </div>
+    <p-button label="Explorar mais" icon="pi pi-compass" styleClass="p-button-text"></p-button>
+  </div>
+
+  <div class="grid">
+    @for (item of meusCursos(); track item.id) {
+      <div class="col-12 lg:col-6 p-3">
+        <div
+          class="flex flex-column md:flex-row bg-white shadow-2 border-round-xl overflow-hidden hover:shadow-5 transition-duration-300"
+        >
+          <div class="w-full md:w-15rem h-10rem bg-gray-200 relative">
+            <img [src]="item.foto || fotoPadrao" class="w-full h-full object-cover" />
+            <div class="absolute bottom-0 left-0 w-full p-2 bg-black-alpha-60">
+              <span class="text-white text-xs font-bold">
+                <i class="pi pi-play-circle mr-1"></i> Aula 5 de 12
+              </span>
+            </div>
+          </div>
+
+          <div class="p-4 flex-grow-1 flex flex-column justify-content-between">
+            <div>
+              <span class="text-primary font-bold text-xs uppercase">{{ item.categoria }}</span>
+              <h3 class="text-xl font-bold text-900 mt-1 mb-2">{{ item.nome }}</h3>
+            </div>
+
+            <div class="mt-3">
+              <div class="flex justify-content-between mb-2">
+                <span class="text-sm font-medium text-600">Seu Progresso</span>
+                <span class="text-sm font-bold text-primary">65%</span>
+              </div>
+              <p-progressBar [value]="65" [showValue]="false" styleClass="h-8px"></p-progressBar>
+            </div>
+
+            <div class="flex justify-content-end mt-4">
+              <p-button
+                label="Continuar Estudando"
+                icon="pi pi-arrow-right"
+                iconPos="right"
+                styleClass="p-button-sm border-round-lg"
+                [routerLink]="['/conteudo/', item.id]"
+              >
+              </p-button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    @if (meusCursos().length === 0) {
+      <div class="col-12 text-center py-8">
+        <img src="assets/images/empty-courses.svg" class="w-15rem mb-4 opacity-50" />
+        <h3 class="text-700">Você ainda não se matriculou em nada.</h3>
+        <p-button label="Ver Catálogo" routerLink="/cursos" styleClass="mt-3"></p-button>
+      </div>
+    }
+  </div>
+</div>

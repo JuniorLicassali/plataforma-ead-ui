@@ -49,12 +49,30 @@
                 [(ngModel)]="aulaSelecionada"
                 (onChange)="onAulaChange($event)"
                 [metaKeySelection]="false"
-                class="w-full md:w-56"
+                class="w-full md:w-56 border-none shadow-none"
               >
                 <ng-template #item let-aula>
-                  <div class="flex align-items-center gap-2">
-                    <i class="pi pi-play-circle" style="color: #6366f1"></i>
-                    <span>{{ aula.titulo }}</span>
+                  <div
+                    class="flex align-items-center gap-3 w-full p-2 border-round-lg transition-colors transition-duration-200"
+                    [class.aula-ativa]="aula.id === aulaSelecionada().id"
+                  >
+                    <i
+                      [class]="
+                        aula.id === aulaSelecionada().id
+                          ? 'pi pi-play-circle text-primary font-bold'
+                          : 'pi pi-play-circle text-400'
+                      "
+                      style="font-size: 1.1rem"
+                    ></i>
+
+                    <span
+                      class="text-sm"
+                      [class.font-bold]="aula.id === aulaSelecionada().id"
+                      [class.text-primary]="aula.id === aulaSelecionada().id"
+                      [class.text-700]="aula.id !== aulaSelecionada().id"
+                    >
+                      {{ aula.titulo }}
+                    </span>
                   </div>
                 </ng-template>
               </p-listbox>

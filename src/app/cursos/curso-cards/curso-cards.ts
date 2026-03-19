@@ -8,10 +8,11 @@ import { InputTextModule } from 'primeng/inputtext';
 
 import { CursoResumido } from '../../core/model';
 import { CursoFiltro, CursoService } from '../curso-service';
-import { LazyLoadEvent } from 'primeng/api';
+import { CurrencyPipe } from '@angular/common';
 import { ErrorHandlerService } from '../../core/error-handler-service';
 import { AuthService } from '../../seguranca/auth-service';
 import { Router } from '@angular/router';
+import { Tag } from 'primeng/tag';
 
 @Component({
   selector: 'app-cards-cursos',
@@ -22,6 +23,8 @@ import { Router } from '@angular/router';
     InputIconModule,
     InputTextModule,
     FormsModule,
+    Tag,
+    CurrencyPipe
   ],
   templateUrl: './curso-cards.html',
   styleUrl: './curso-cards.scss',
@@ -33,9 +36,8 @@ export class CardsCursos implements OnInit {
   filtro = new CursoFiltro();
   totalRegistros = signal<number>(0);
 
-  loading = false;
-
-  private timer: any;
+  loading = signal(false);
+  temMaisCursos = signal(true);
 
   private cursoService = inject(CursoService);
   private errorHandler = inject(ErrorHandlerService);
@@ -46,31 +48,38 @@ export class CardsCursos implements OnInit {
     this.listar();
   }
 
-  listar(pagina: number = 0): void {
+  listar(pagina: number = 0, acumular: boolean = false): void {
     this.filtro.pagina = pagina;
+    this.loading.set(true);
 
     this.cursoService
       .listarResumido(this.filtro)
       .then((res: any) => {
-        this.cursos.set(res.content);
+        if (acumular) {
+          this.cursos.update(antigos => [...antigos, ...res.content]);
+        } else {
+          this.cursos.set(res.content);
+        }
+
         this.totalRegistros.set(res.totalElements);
+        
+        const ultimaPagina = (res.number + 1) >= res.totalPages;
+        this.temMaisCursos.set(!ultimaPagina);
+
+
       })
-      .catch((erro) => this.errorHandler.handle(erro));
+      .catch((erro) => this.errorHandler.handle(erro))
+      .finally(() => this.loading.set(false));
   }
 
   buscar(): void {
-    if (this.timer) {
-      clearTimeout(this.timer);
-    }
-
-    this.timer = setTimeout(() => {
-      this.executarBusca();
-    }, 400);
+    this.filtro.pagina = 0;
+    this.listar(0, false);
   }
 
-  aoMudarPagina(event: LazyLoadEvent) {
-    const pagina = event!.first! / event!.rows!;
-    this.listar(pagina);
+  carregarMais(): void {
+    const proxima = this.filtro.pagina + 1;
+    this.listar(proxima, true);
   }
 
   matricular(curso: CursoResumido) {

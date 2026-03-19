@@ -11,7 +11,7 @@ export class CursoFiltro {
   precoMax?: number;
   ativo?: boolean;
   pagina: number = 0;
-  itensPorPagina: number = 5;
+  itensPorPagina: number = 4;
 }
 
 @Injectable({
@@ -49,6 +49,10 @@ export class CursoService {
     }
 
     return firstValueFrom(this.http.get<any[]>(`${this.URL}`, { params }));
+  }
+
+  listarMeusCursos(): Promise<Curso> {
+    return firstValueFrom(this.http.get<Curso>(`${this.URL}/matriculados`));
   }
 
   ativar(codigo: number): Promise<void> {

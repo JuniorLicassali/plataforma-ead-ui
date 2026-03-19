@@ -86,7 +86,6 @@ export class AuthService {
         localStorage.setItem('id_token', response.id_token);
         console.log('id_token salvo com sucesso');
       }
-
     } catch (error) {
       console.error(error);
     }
@@ -173,7 +172,7 @@ export class AuthService {
 
   getUsuarioId() {
     const token = localStorage.getItem('token');
-    if(!token) {
+    if (!token) {
       return null;
     }
 
@@ -195,13 +194,13 @@ export class AuthService {
   }
 
   logout() {
-  localStorage.clear();
+    localStorage.clear();
 
-  const clientId = environment.oauth.clientId;
-  const redirectUri = encodeURIComponent(environment.logoutRedirectToUrl);
-  
-  const logoutUrl = `${environment.apiUrl}/logout?client_id=${clientId}&post_logout_redirect_uri=${redirectUri}`;
+    const clientId = environment.oauth.clientId;
+    const redirectUri = encodeURIComponent(environment.logoutRedirectToUrl);
 
-  window.location.href = logoutUrl;
-}
+    const logoutUrl = `${environment.apiUrl}/logout?client_id=${clientId}&post_logout_redirect_uri=${redirectUri}`;
+
+    window.location.href = logoutUrl;
+  }
 }

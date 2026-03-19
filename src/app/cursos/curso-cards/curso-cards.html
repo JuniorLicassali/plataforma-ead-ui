@@ -1,30 +1,109 @@
-<div class="container mt-5">
-  <h2>EXPANDA SEUS CONHECIMENTOS</h2>
+<div class="container ticker-wrapper bg-secondary text-white py-2">
+  <div class="ticker-text font-semibold text-sm">
+    🚀 NOVOS CURSOS DE ANGULAR 18 DISPONÍVEIS! | 🔥 PROMOÇÃO DE PRIMAVERA: ATÉ 50% OFF! | 🎓
+    CERTIFICADOS RECONHECIDOS INCLUSOS | 💡 APRENDA COM ESPECIALISTAS DO MERCADO
+  </div>
+</div>
+<div class="container p-2">
+  <div
+    class="hero-section p-4 md:p-8 text-center bg-primary text-white border-round-2xl md:border-round-3xl mb-6 overflow-hidden"
+  >
+    <h1 class="text-3xl md:text-5xl font-bold mb-3 px-2">Expanda seus conhecimentos</h1>
 
-    <p-iconfield>
-        <p-inputicon class="pi pi-search" />
-        <input type="text" [(ngModel)]="filtro.nome" (input)="buscar()" pInputText placeholder="Buscar cursos..." />
-    </p-iconfield>
+    <p class="text-base md:text-xl mb-5 text-blue-100 px-3">
+      Milhares de cursos para você se tornar um especialista.
+    </p>
 
-  <h5>CURSOS DISPONIVEIS</h5>
+    <div class="flex justify-content-center px-3">
+      <span class="p-input-icon-left w-full md:w-30rem">
+        <i class="pi pi-search"></i>
+        <input
+          class="w-full p-inputtext-lg border-round-3xl"
+          type="text"
+          [(ngModel)]="filtro.nome"
+          (keyup.enter)="buscar()"
+          pInputText
+          placeholder="O que você quer aprender?"
+        />
+      </span>
+    </div>
+  </div>
+  <div class="flex justify-content-between align-items-center mb-4">
+    <h3 class="font-bold m-0">Cursos Disponíveis</h3>
+    <p-tag [value]="cursos().length + ' cursos encontrados'" severity="info"></p-tag>
+  </div>
 
   <div class="grid">
-    @for (curso of cursos(); track $index) {
-      <div class="col-12 md:col-6 lg:col-3">
-        <p-card [style]="{ overflow: 'hidden' }">
+    @for (curso of cursos(); track curso.id) {
+      <div class="col-12 sm:col-6 lg:col-3 p-3">
+        <p-card
+          styleClass="h-full hover:shadow-8 transition-duration-300 cursor-pointer border-round-xl overflow-hidden flex flex-column"
+        >
           <ng-template #header>
-            <img alt="Card" class="w-full" [src]="fotoPadrao"  />
-          </ng-template>
-          <ng-template #title>{{ curso.nome }}</ng-template>
-          <p>{{ curso.descricao }}</p>
-          <ng-template #footer>
-            <div class="flex gap-4 mt-1">
-              <p-button [label]="'Ir para Curso'" (click)="matricular(curso)" class="w-full" styleClass="w-full" />
+            <div class="relative">
+              <img [src]="fotoPadrao" class="w-full h-10rem object-cover" />
+              <p-tag
+                value="Novo"
+                severity="warn"
+                [rounded]="true"
+                class="absolute top-0 right-0 m-2 shadow-2"
+              ></p-tag>
             </div>
+          </ng-template>
+
+          <ng-template #title>
+            <span class="text-xs font-semibold text-primary uppercase mb-1 block"
+              >Desenvolvimento</span
+            >
+            <span class="text-xl font-bold line-height-2 block h-3rem overflow-hidden text-900">
+              {{ curso.nome }}
+            </span>
+          </ng-template>
+
+          <p class="text-600 text-sm line-height-3 h-3rem overflow-hidden mb-3">
+            {{ curso.descricao }}
+          </p>
+
+          <div class="flex align-items-center gap-3 mb-3 text-500 text-xs">
+            <span class="flex align-items-center gap-1"> <i class="pi pi-users"></i> 1.2k </span>
+            <span class="flex align-items-center gap-1"> <i class="pi pi-clock"></i> 12h </span>
+          </div>
+
+          <div class="mt-auto pt-3 border-top-1 border-100">
+            <div class="flex align-items-baseline gap-2">
+              <span class="text-2xl font-bold text-900">
+                {{ curso.preco | currency: 'BRL' : 'symbol' : '1.2-2' }}
+              </span>
+              <span class="text-sm text-500 line-through">R$ 199,90</span>
+            </div>
+          </div>
+
+          <ng-template #footer>
+            <p-button
+              label="Acessar Conteúdo"
+              (click)="matricular(curso)"
+              styleClass="w-full p-button-raised shadow-1"
+            />
           </ng-template>
         </p-card>
       </div>
     }
-
   </div>
+
+  @if (temMaisCursos()) {
+    <div class="flex justify-content-center mt-6 mb-8">
+      <p-button
+        label="Carregar mais cursos"
+        icon="pi pi-plus"
+        [loading]="loading()"
+        (click)="carregarMais()"
+        styleClass="p-button-outlined p-button-secondary border-round-3xl px-6"
+      />
+    </div>
+  } @else if (cursos().length > 0) {
+    <div class="text-center mt-6 mb-8 text-500">
+      <i class="pi pi-check-circle mr-2"></i>
+      <span>Você chegou ao fim do catálogo!</span>
+    </div>
+  }
 </div>

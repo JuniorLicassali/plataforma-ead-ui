@@ -14,7 +14,7 @@
             </div>
 
             <button pButton icon="pi pi-bars" class="md:hidden p-button-text p-button-secondary" (click)="menu.toggle($event)"></button>
-            <p-menu #menu [model]="items" [popup]="true"></p-menu>
+            <p-menu #menu [model]="items" [popup]="true" position="left"></p-menu>
 
             
             <button pButton icon="pi pi-sign-out" class="p-button-text p-button-secondary hidden md:flex" (click)="logout()"></button>

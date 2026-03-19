@@ -1,5 +1,16 @@
 .container {
-    max-width: 1200px;  /* Define a largura máxima dos cards */
-    margin: 0 auto;     /* A mágica que centraliza o bloco no meio da tela */
-    padding: 0 1rem;    /* Garante que não encoste nas bordas em telas médias */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.text-2xl {
+    color: #2c3e50;
+}
+
+:host ::ng-deep .p-card-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 1.5rem !important;
 }

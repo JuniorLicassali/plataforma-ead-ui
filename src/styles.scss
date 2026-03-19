@@ -1,4 +1,4 @@
-/* You can add global styles to this file, and also import other style files */
+
 @import "primeicons/primeicons.css";
 @import "primeflex/primeflex.css";
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
@@ -41,6 +41,29 @@ a:hover, a:focus {
 a.p-button:hover,
 a.p-button:focus {
   text-decoration: none;
+}
+
+.ticker-wrapper {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+}
+
+
+.ticker-text {
+  display: inline-block;
+  padding-left: 100%;
+  animation: ticker-animation 25s linear infinite;
+}
+
+@keyframes ticker-animation {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-100%, 0, 0); }
+}
+
+.ticker-wrapper:hover .ticker-text {
+  animation-play-state: paused;
 }
 
 @media screen and (max-width: 980px) {

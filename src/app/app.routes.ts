@@ -7,10 +7,11 @@ import { QuestionarioCadastro } from './questionarios/questionario-cadastro/ques
 import { Authorized } from './seguranca/authorized/authorized/authorized';
 import { authGuard } from './seguranca/auth-guard';
 import { CursoCadastro } from './cursos/curso-cadastro/curso-cadastro';
+import { CursoMatriculado } from './cursos/curso-matriculado/curso-matriculado';
 
 export const routes: Routes = [
     { path: 'cursos', component: CardsCursos, canActivate: [authGuard] },
-    { path: 'cursos/matriculados', component: CardsCursos, canActivate: [authGuard] },
+    { path: 'cursos/matriculados', component: CursoMatriculado, canActivate: [authGuard] },
     { path: 'checkout', component: Checkout, canActivate: [authGuard] },
     { path: 'conteudo/:cursoId', component: CursoConteudo, canActivate: [authGuard] },
     { path: 'questionario', component: Questionario, canActivate: [authGuard] },
