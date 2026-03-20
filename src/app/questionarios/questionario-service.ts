@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { CursoResumido, QuestionarioCadastroProf } from '../core/model';
+import { CursoResumido, QuestionarioCadastroProf, QuestionarioUsuario } from '../core/model';
 import { firstValueFrom } from 'rxjs';
 
 @Injectable({
@@ -45,4 +45,13 @@ export class QuestionarioService {
 
     return firstValueFrom(this.http.delete<void>(url));
   }
+
+  iniciarQuestionario(cursoId: number): Promise<QuestionarioUsuario> {
+    return firstValueFrom(this.http.get<QuestionarioUsuario>(`${this.URL}/${cursoId}/questionarios`));
+  }
+
+  enviarResultado(cursoId: number, questionarioId: number, respostas: any[]): Promise<any> {
+    return firstValueFrom(this.http.post<any>(`${this.URL}/${cursoId}/questionarios/${questionarioId}/respostas`, respostas))
+  }
+
 }

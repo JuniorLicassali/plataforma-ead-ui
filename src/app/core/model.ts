@@ -1,8 +1,8 @@
 export interface QuestionarioUsuario {
   id: number;
   questionario: Questionario;
-  dataAbertura: Date;
-  dataFechamento: Date;
+  dataAbertura: string;
+  dataFechamento: string;
   finalizado: boolean;
 }
 
@@ -58,7 +58,7 @@ export interface Matricula {
   id?: number;
   usuarioId?: number;
   cursoId?: number;
-  dataMatricula?: Date;
+  dataMatricula?: string;
   statusMatricula?: string;
 }
 

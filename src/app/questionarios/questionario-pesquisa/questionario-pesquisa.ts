@@ -1,4 +1,5 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { RadioButtonModule } from 'primeng/radiobutton';
@@ -7,91 +8,54 @@ import { ChipModule } from 'primeng/chip';
 import { TimelineModule } from 'primeng/timeline';
 import { ProgressBarModule } from 'primeng/progressbar';
 
-import { Pergunta, QuestionarioUsuario } from '../../core/model';
+import { Pergunta } from '../../core/model';
+import { Dialog } from 'primeng/dialog';
+import { QuestionarioService } from '../questionario-service';
+import { Router } from '@angular/router';
+import { ErrorHandlerService } from '../../core/error-handler-service';
 
 @Component({
   selector: 'app-questionario',
   standalone: true,
-  imports: [RadioButtonModule, FormsModule, ButtonModule, ChipModule, TimelineModule, ProgressBarModule],
+  imports: [
+    NgClass,
+    RadioButtonModule,
+    FormsModule,
+    ButtonModule,
+    ChipModule,
+    TimelineModule,
+    ProgressBarModule,
+    Dialog,
+  ],
   templateUrl: './questionario-pesquisa.html',
   styleUrl: './questionario-pesquisa.scss',
 })
-export class Questionario {
+export class Questionario implements OnInit {
+  cursoId: any;
+  questionarioId: any;
+
   items: Pergunta[] = [];
   perguntaAtual: number = 0;
 
-  tempoRestante = signal('00:00'); 
+  exibirInstrucoes = signal(true);
+  questionarioIniciado = signal(false);
+
+  tempoRestante = signal('00:00');
   timer: any;
 
-  ngOnInit() {
-    const dadosRecebidos: QuestionarioUsuario = {
-      id: 1,
-      questionario: {
-        id: 1,
-        descricao: 'Questionario Spring Boot',
-        ativo: true,
-        perguntas: [
-          {
-            id: 1,
-            enunciado: 'Qual é a principal diferença entre as palavras-chave final, finally e finalize em Java?',
-            respostaSelecionada: null,
-            opcoes: [
-              {
-                texto:
-                  'final é usado para tratar exceções, finally define constantes e finalize é um método da classe Thread.',
-              },
-              {
-                texto:
-                  'final impede que uma variável/método/classe seja alterada, finally é um bloco que sempre executa após um try-catch, e finalize é um método chamado pelo Garbage Collector antes de destruir um objeto.',
-              },
-              {
-                texto:
-                  'Não há diferença; as três servem para encerrar a execução de um programa de forma segura.',
-              },
-              {
-                texto:
-                  'final é usado apenas em classes abstratas, finally limpa a memória RAM e finalize impede a herança de classes.',
-              },
-            ],
-          },
-          {
-            id: 2,
-            enunciado:
-              'No Java, qual é o conceito que permite que uma classe filha forneça uma implementação específica de um método que já foi definido na sua classe pai?',
-            respostaSelecionada: null,
-            opcoes: [
-              {
-                texto:
-                  'Escalabilidade: a capacidade do Java de rodar em diferentes sistemas operacionais sem alterar o código.',
-              },
-              {
-                texto:
-                  'Sobrecarga (Overloading): quando criamos vários métodos com o mesmo nome, mas assinaturas (parâmetros) diferentes.',
-              },
-              {
-                texto:
-                  'Encapsulamento: quando escondemos os atributos da classe usando o modificador private.',
-              },
-              {
-                texto:
-                  'Sobrescrita (Overriding): quando a subclasse redefine o comportamento de um método da superclasse usando a anotação @Override.',
-              },
-            ],
-          }
-        ],
-      },
-      dataAbertura: new Date('2026-03-06T18:30:12.2104088Z'),
-      dataFechamento: new Date('2026-03-06T18:40:12.2104088Z'),
-      finalizado: false
-    };
+  private questionarioService = inject(QuestionarioService);
+  private errorHandler = inject(ErrorHandlerService);
+  private router = inject(Router);
 
-    this.items = dadosRecebidos.questionario.perguntas;
-    this.iniciarCronometro(dadosRecebidos.dataFechamento.toISOString());
+  ngOnInit() {
+    this.carregarDadosDaNavegacao();
+    this.carregarEstadoAnterior();
   }
 
   proximaPergunta() {
     if (this.perguntaAtual < this.items.length) {
       this.perguntaAtual += 1;
+      this.salvarProgressoNoStorage();
       this.logar();
     }
   }
@@ -106,16 +70,35 @@ export class Questionario {
     console.log(this.items);
   }
 
-  prepararEnvioRespostas() {
+  comecarQuestionario() {
+    this.questionarioService.iniciarQuestionario(this.cursoId)
+      .then((res) => {
+        this.configurarSessao(res.questionario.perguntas, res.dataFechamento, res.id);
+      })
+      .catch((erro) => {
+        this.errorHandler.handle(erro);
+      });
+  }
+
+  enviarRespostas() {
     const payload = this.items.map((p: any) => ({
       perguntaId: p.id,
-      resposta: p.respostaSelecionada,
+      resposta: p.respostaSelecionada || null,
     }));
 
+    this.questionarioService.enviarResultado(this.cursoId, this.questionarioId, payload)
+      .then(() => {
+        this.limparLocalStorage();
+      })
+      .catch((erro) => {
+        this.errorHandler.handle(erro);
+      });
     console.log(payload);
   }
 
   iniciarCronometro(dataFim: string) {
+    if (this.timer) clearInterval(this.timer);
+
     const fim = new Date(dataFim).getTime();
 
     this.timer = setInterval(() => {
@@ -123,18 +106,83 @@ export class Questionario {
       const diferenca = fim - agora;
 
       if (diferenca <= 0) {
-        clearInterval(this.timer);
-        this.tempoRestante.set("Tempo Esgotado!"); 
+        this.finalizarPorTempo();
         return;
       }
 
-      const min = Math.floor(diferenca / 60000).toString().padStart(2, '0');
-      const seg = Math.floor((diferenca % 60000) / 1000).toString().padStart(2, '0');
+      const totalSegundos = Math.floor(diferenca / 1000);
+      const min = Math.floor(totalSegundos / 60)
+        .toString()
+        .padStart(2, '0');
+      const seg = (totalSegundos % 60).toString().padStart(2, '0');
 
       this.tempoRestante.set(`${min}:${seg}`);
     }, 1000);
-
   }
 
+  private carregarDadosDaNavegacao() {
+    const estado = history.state;
 
+    if (estado && estado.cursoId) {
+      this.cursoId = estado.cursoId;
+    } else {
+      this.router.navigate(['/cursos']);
+    }
+  }
+
+  private configurarSessao(perguntas: Pergunta[], dataFim: string, questionarioId: number) {
+    this.items = perguntas;
+    this.questionarioId = questionarioId;
+
+    localStorage.setItem('questionario_id', questionarioId.toString());
+    this.exibirInstrucoes.set(false);
+    this.questionarioIniciado.set(true);
+
+    localStorage.setItem('fim_questionario', dataFim);
+    this.salvarProgressoNoStorage();
+
+    this.iniciarCronometro(dataFim);
+  }
+
+  private salvarProgressoNoStorage() {
+    localStorage.setItem('perguntas_questionario', JSON.stringify(this.items));
+  }
+
+  private carregarEstadoAnterior() {
+    const dataSalva = localStorage.getItem('fim_questionario');
+    const perguntasSalvas = localStorage.getItem('perguntas_questionario');
+    const idQuestionarioSalvo = localStorage.getItem('questionario_id');
+
+    if (dataSalva && perguntasSalvas) {
+      this.items = JSON.parse(perguntasSalvas);
+      this.questionarioId = Number(idQuestionarioSalvo);
+
+      this.exibirInstrucoes.set(false);
+      this.questionarioIniciado.set(true);
+      this.iniciarCronometro(dataSalva);
+    }
+  }
+
+  private finalizarPorTempo() {
+    clearInterval(this.timer);
+    this.tempoRestante.set('Tempo Esgotado!');
+
+    const payload = this.items.map((p: any) => ({
+      perguntaId: p.id,
+      resposta: p.respostaSelecionada || null,
+    }));
+    this.questionarioService.enviarResultado(this.cursoId, this.questionarioId, payload)
+      .then(() => {
+        this.limparLocalStorage();
+      })
+      .catch((erro) => {
+        this.errorHandler.handle(erro);
+      });
+  }
+
+  private limparLocalStorage() {
+    localStorage.removeItem('fim_questionario');
+    localStorage.removeItem('perguntas_questionario');
+    localStorage.removeItem('questionario_id');
+  }
 }

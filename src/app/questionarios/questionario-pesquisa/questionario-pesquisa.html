@@ -1,82 +1,156 @@
-<div class="container mt-5">
-  <div class="grid justify-content-center w-full">
-    <div class="flex justify-content-end p-3">
-      <p-chip
-        [label]="'Tempo restante: ' + tempoRestante()"
-        icon="pi pi-clock"
-        style="background-color: #f3f4f6; color: #374151"
-      />
-    </div>
+<p-dialog
+  header="Instruções da Avaliação"
+  [(visible)]="exibirInstrucoes"
+  [modal]="true"
+  [closable]="false"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="w-full md:w-30rem"
+>
+  <div class="flex flex-column align-items-center p-3 text-center">
+    <i class="pi pi-exclamation-triangle text-warning text-6xl mb-4" style="color: #f59e0b"></i>
 
-    <div class="col-12 md:col-12 card-quest">
-      @if (items[perguntaAtual]) {
-        <div class="mb-3">
-          <div class="flex justify-content-between align-items-center mb-2">
-            <span class="text-sm font-semibold text-500"
-              >Questão {{ perguntaAtual + 1 }} de {{ items.length }}</span
-            >
-            <span class="text-xs text-primary font-bold"
-              >{{ (((perguntaAtual + 1) / items.length) * 100).toFixed(0) }}%</span
-            >
+    <h3 class="text-900 font-bold mb-3">Atenção, Candidato!</h3>
+
+    <ul class="text-left text-700 line-height-3 mb-4 list-none p-0">
+      <li class="mb-2 flex align-items-start">
+        <i class="pi pi-check-circle text-green-500 mr-2 mt-1"></i>
+        <span
+          >Reserve pelo menos <strong>1 hora</strong> em um lugar calmo e sem interrupções.</span
+        >
+      </li>
+      <li class="mb-2 flex align-items-start">
+        <i class="pi pi-clock text-blue-500 mr-2 mt-1"></i>
+        <span>A prova possui duração máxima de <strong>60 minutos</strong>.</span>
+      </li>
+      <li class="mb-2 flex align-items-start">
+        <i class="pi pi-info-circle text-orange-500 mr-2 mt-1"></i>
+        <span
+          ><strong>Importante:</strong> Se o tempo esgotar, o sistema enviará automaticamente apenas
+          o que foi marcado. Questões não respondidas serão enviadas como <em>null</em>.</span
+        >
+      </li>
+    </ul>
+
+    <p-button
+      label="Entendi e Quero Começar"
+      icon="pi pi-play"
+      severity="success"
+      styleClass="w-full py-3 font-bold"
+      (onClick)="comecarQuestionario()"
+    />
+  </div>
+</p-dialog>
+
+@if (questionarioIniciado()) {
+  <div class="container mt-5 px-3">
+    <div class="grid justify-content-center">
+      <div class="col-12 flex justify-content-end mb-3 p-0">
+        <p-chip
+          [label]="'Tempo restante: ' + tempoRestante()"
+          icon="pi pi-clock"
+          styleClass="bg-gray-100 text-gray-700 font-medium border-round-lg"
+        />
+      </div>
+
+      <div class="col-12 card-quest shadow-2 p-4 md:p-5 border-round-xl bg-white">
+        @if (items[perguntaAtual]) {
+          <div class="mb-4">
+            <div class="flex justify-content-between align-items-end mb-2">
+              <span class="text-sm font-bold text-500 uppercase tracking-wider">
+                Questão {{ perguntaAtual + 1 }} de {{ items.length }}
+              </span>
+              <span class="text-xs text-primary font-bold bg-blue-50 px-2 py-1 border-round">
+                {{ (((perguntaAtual + 1) / items.length) * 100).toFixed(0) }}% concluído
+              </span>
+            </div>
+            <p-progressBar
+              [value]="((perguntaAtual + 1) / items.length) * 100"
+              [showValue]="false"
+              styleClass="h-1"
+            />
           </div>
 
-          <p-progressBar
-            [value]="((perguntaAtual + 1) / items.length) * 100"
-            [showValue]="false"
-            style="height: 6px"
-          />
-        </div>
-        <div class="mb-3">
-          <p class="gap-2 m-2">{{ items[perguntaAtual].enunciado }}</p>
-          @for (opcao of items[perguntaAtual].opcoes; track $index) {
-            <div
-              class="flex align-items-center gap-2 m-2"
-              style="
-                background: #fdfdfd;
-                border: 2px solid #cacfe6;
-                border-radius: 8px;
-                padding: 10px;
-              "
-            >
-              <p-radioButton
-                [name]="'grupo-' + perguntaAtual"
-                [value]="opcao.texto"
-                [(ngModel)]="items[perguntaAtual].respostaSelecionada"
-                [inputId]="'id-' + $index"
-              />
-              <label [for]="'id-' + $index">{{ opcao.texto }}</label>
-            </div>
-          }
-        </div>
+          <div class="mb-5">
+            <p class="text-xl md:text-2xl font-semibold text-800 line-height-3 m-0">
+              {{ items[perguntaAtual].enunciado }}
+            </p>
+          </div>
 
-        <div class="flex justify-content-center gap-2">
-          <p-button
-            label="Anterior"
-            [hidden]="perguntaAtual === 0 ? true : false"
-            [rounded]="true"
-            (onClick)="perguntaAnterior()"
-            severity="secondary"
-          />
-          <p-button
-            label="Próxima"
-            [rounded]="true"
-            (onClick)="proximaPergunta()"
-            [disabled]="!items[perguntaAtual].respostaSelecionada"
-            severity="success"
-          />
-        </div>
-      } @else if (items.length > 0) {
-        <div class="card p-5 text-center">
-          <h2>Questionário Finalizado!</h2>
-          <p-button
-            label="Enviar Respostas"
-            severity="success"
-            (onClick)="prepararEnvioRespostas()"
-          />
-        </div>
-      } @else {
-        <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
-      }
+          <div class="flex flex-column gap-3 mb-5">
+            @for (opcao of items[perguntaAtual].opcoes; track $index) {
+              <label
+                [for]="'id-' + $index"
+                class="flex align-items-center p-4 border-2 border-round-lg cursor-pointer transition-all transition-duration-200"
+                [ngClass]="
+                  items[perguntaAtual].respostaSelecionada === opcao.texto
+                    ? 'border-primary bg-blue-50 shadow-1'
+                    : 'border-100 hover:bg-gray-50'
+                "
+              >
+                <p-radioButton
+                  [name]="'grupo-' + perguntaAtual"
+                  [value]="opcao.texto"
+                  [(ngModel)]="items[perguntaAtual].respostaSelecionada"
+                  [inputId]="'id-' + $index"
+                />
+                <span class="ml-3 text-700 font-medium text-lg">{{ opcao.texto }}</span>
+              </label>
+            }
+          </div>
+
+          <div class="flex justify-content-between gap-3 pt-5 border-top-1 border-100">
+            <p-button
+              label="Questão Anterior"
+              icon="pi pi-arrow-left"
+              [hidden]="perguntaAtual === 0"
+              [rounded]="true"
+              (onClick)="perguntaAnterior()"
+              severity="secondary"
+              styleClass="p-button-text font-bold"
+            />
+
+            <p-button
+              [label]="perguntaAtual === items.length - 1 ? 'Revisar Respostas' : 'Próxima Questão'"
+              [icon]="perguntaAtual === items.length - 1 ? 'pi pi-eye' : 'pi pi-arrow-right'"
+              iconPos="right"
+              [rounded]="true"
+              (onClick)="proximaPergunta()"
+              [disabled]="!items[perguntaAtual].respostaSelecionada"
+              severity="success"
+              styleClass="px-4 font-bold shadow-2"
+            />
+          </div>
+        } @else if (items.length > 0) {
+          <div class="py-8 text-center">
+            <div
+              class="inline-flex align-items-center justify-content-center bg-green-100 border-circle w-6rem h-6rem mb-4"
+            >
+              <i class="pi pi-check text-5xl text-green-600"></i>
+            </div>
+            <h2 class="text-900 font-bold text-3xl mb-3">Questionário Finalizado!</h2>
+            <p class="text-600 text-lg mb-5">
+              Você concluiu todas as questões. Revise suas respostas antes de enviar.
+            </p>
+            <div class="flex flex-column md:flex-row justify-content-center gap-3">
+              <p-button
+                label="Revisar Tudo"
+                icon="pi pi-refresh"
+                severity="secondary"
+                (onClick)="perguntaAtual = 0"
+                styleClass="p-button-outlined"
+              />
+              <p-button
+                label="Enviar agora"
+                icon="pi pi-send"
+                severity="success"
+                (onClick)="enviarRespostas()"
+                styleClass="px-6"
+              />
+            </div>
+          </div>
+        }
+      </div>
     </div>
   </div>
-</div>
+}

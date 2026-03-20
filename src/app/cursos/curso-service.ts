@@ -78,6 +78,14 @@ export class CursoService {
     return firstValueFrom(this.http.post<Matricula>(url, body));
   }
 
+  verificarStatusMatricula(usuarioId: number, cursoId: number): Promise<any> {
+    const params = new HttpParams()
+      .set('usuarioId', usuarioId)
+      .set('cursoId', cursoId);
+
+    return firstValueFrom(this.http.get<any>(`${environment.apiUrl}/matriculas/status`, {params}));
+  }
+
   construirArvorDeAulas(curso: Curso) {
     this.tree = new GenericTree<any>();
 

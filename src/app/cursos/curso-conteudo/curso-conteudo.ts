@@ -87,6 +87,16 @@ export class CursoConteudo implements OnInit, AfterViewInit {
       });
   }
 
+  irParaQuestionario(cursoId: number) {
+    this.router.navigate(['/questionario'], 
+      {
+        state: {
+          cursoId
+        }
+      }
+    );
+  }
+
   private iniciarEscutaDeVideo() {
     window.addEventListener('message', (event) => {
       if (event.origin.includes('cloudinary') && event.data === 'ended') {
@@ -111,8 +121,6 @@ export class CursoConteudo implements OnInit, AfterViewInit {
     this.ultimoValorValido = aula;
     this.fimVideo = false;
 
-    this.router.navigate(['/cursos', this.cursoId, 'aula', aula.id]);
-
     const modulo = this.cursoService.getModuloDaAula(aula.id!);
     if (modulo) {
       const index = this.modulos().findIndex((m) => m.id === modulo.id);
@@ -121,11 +129,11 @@ export class CursoConteudo implements OnInit, AfterViewInit {
       }
     }
 
-    if (this.videoElement) {
-      const video = this.videoElement.nativeElement;
-      video.load();
-      video.play();
-    }
+    // if (this.videoElement) {
+    //   const video = this.videoElement.nativeElement;
+    //   video.load();
+    //   // video.play();
+    // }
   }
   
 }
