@@ -1,6 +1,6 @@
 <p-dialog
-  header="Instruções da Avaliação"
-  [(visible)]="exibirInstrucoes"
+  header="Resultado da Avaliação"
+  [visible]="questionarioFinalizado()"
   [modal]="true"
   [closable]="false"
   [draggable]="false"
@@ -8,41 +8,112 @@
   styleClass="w-full md:w-30rem"
 >
   <div class="flex flex-column align-items-center p-3 text-center">
-    <i class="pi pi-exclamation-triangle text-warning text-6xl mb-4" style="color: #f59e0b"></i>
+    @if (nota >= 7) {
+      <i class="pi pi-check-circle text-green-500 text-6xl mb-4"></i>
+      <h3 class="text-900 font-bold mb-2">Parabéns, Candidato!</h3>
+      <p class="text-700 mb-4">Você concluiu a avaliação com sucesso.</p>
+    } @else {
+      <i class="pi pi-info-circle text-orange-500 text-6xl mb-4"></i>
+      <h3 class="text-900 font-bold mb-2">Avaliação Finalizada</h3>
+      <p class="text-700 mb-4">Sua nota foi abaixo da média mínima (7.0).</p>
+    }
 
-    <h3 class="text-900 font-bold mb-3">Atenção, Candidato!</h3>
+    <div class="surface-100 border-round p-4 w-full mb-4">
+      <span class="text-600 font-medium block mb-2 text-sm uppercase">Sua Pontuação</span>
+      <span class="text-4xl font-bold" [ngClass]="nota >= 7 ? 'text-green-600' : 'text-red-600'">
+        {{ nota }}
+      </span>
+    </div>
 
-    <ul class="text-left text-700 line-height-3 mb-4 list-none p-0">
-      <li class="mb-2 flex align-items-start">
-        <i class="pi pi-check-circle text-green-500 mr-2 mt-1"></i>
+    <div
+      class="text-left text-700 line-height-3 mb-5 p-3 border-left-3"
+      [ngClass]="nota >= 7 ? 'border-green-500 bg-green-50' : 'border-orange-500 bg-orange-50'"
+    >
+      @if (nota >= 7) {
         <span
-          >Reserve pelo menos <strong>1 hora</strong> em um lugar calmo e sem interrupções.</span
+          >Sua certificação já está disponível para emissão. Clique no botão abaixo para gerar o
+          documento.</span
         >
-      </li>
-      <li class="mb-2 flex align-items-start">
-        <i class="pi pi-clock text-blue-500 mr-2 mt-1"></i>
-        <span>A prova possui duração máxima de <strong>60 minutos</strong>.</span>
-      </li>
-      <li class="mb-2 flex align-items-start">
-        <i class="pi pi-info-circle text-orange-500 mr-2 mt-1"></i>
+      } @else {
         <span
-          ><strong>Importante:</strong> Se o tempo esgotar, o sistema enviará automaticamente apenas
-          o que foi marcado. Questões não respondidas serão enviadas como <em>null</em>.</span
+          >Infelizmente você não atingiu a pontuação necessária.
+          <strong>Aguarde que em breve entraremos em contato</strong> para uma nova realização do
+          questionário.</span
         >
-      </li>
-    </ul>
+      }
+    </div>
 
-    <p-button
-      label="Entendi e Quero Começar"
-      icon="pi pi-play"
-      severity="success"
-      styleClass="w-full py-3 font-bold"
-      (onClick)="comecarQuestionario()"
-    />
+    <div class="w-full flex flex-column gap-2">
+      @if (nota >= 7) {
+        <p-button
+          label="Gerar Certificado"
+          icon="pi pi-file-pdf"
+          severity="success"
+          styleClass="w-full py-3 font-bold"
+          (onClick)="gerarCertificado()"
+        />
+      }
+
+      <p-button
+        label="Voltar para a Home"
+        icon="pi pi-home"
+        [routerLink]="['/cursos']"
+        [severity]="nota >= 7 ? 'secondary' : 'warn'"
+        [outlined]="nota >= 7"
+        styleClass="w-full py-3 font-bold"
+      />
+    </div>
   </div>
 </p-dialog>
 
-@if (questionarioIniciado()) {
+@if (!questionarioFinalizado()) {
+  <p-dialog
+    header="Instruções da Avaliação"
+    [(visible)]="exibirInstrucoes"
+    [modal]="true"
+    [closable]="false"
+    [draggable]="false"
+    [resizable]="false"
+    styleClass="w-full md:w-30rem"
+  >
+    <div class="flex flex-column align-items-center p-3 text-center">
+      <i class="pi pi-exclamation-triangle text-warning text-6xl mb-4" style="color: #f59e0b"></i>
+
+      <h3 class="text-900 font-bold mb-3">Atenção, Candidato!</h3>
+
+      <ul class="text-left text-700 line-height-3 mb-4 list-none p-0">
+        <li class="mb-2 flex align-items-start">
+          <i class="pi pi-check-circle text-green-500 mr-2 mt-1"></i>
+          <span
+            >Reserve pelo menos <strong>1 hora</strong> em um lugar calmo e sem interrupções.</span
+          >
+        </li>
+        <li class="mb-2 flex align-items-start">
+          <i class="pi pi-clock text-blue-500 mr-2 mt-1"></i>
+          <span>A prova possui duração máxima de <strong>60 minutos</strong>.</span>
+        </li>
+        <li class="mb-2 flex align-items-start">
+          <i class="pi pi-info-circle text-orange-500 mr-2 mt-1"></i>
+          <span
+            ><strong>Importante:</strong> Se o tempo esgotar, o sistema enviará automaticamente
+            apenas o que foi marcado. Questões não respondidas serão enviadas como
+            <em>null</em>.</span
+          >
+        </li>
+      </ul>
+
+      <p-button
+        label="Entendi e Quero Começar"
+        icon="pi pi-play"
+        severity="success"
+        styleClass="w-full py-3 font-bold"
+        (onClick)="comecarQuestionario()"
+      />
+    </div>
+  </p-dialog>
+}
+
+@if (questionarioIniciado() && !questionarioFinalizado()) {
   <div class="container mt-5 px-3">
     <div class="grid justify-content-center">
       <div class="col-12 flex justify-content-end mb-3 p-0">
@@ -144,6 +215,7 @@
                 label="Enviar agora"
                 icon="pi pi-send"
                 severity="success"
+                [loading]="enviando()"
                 (onClick)="enviarRespostas()"
                 styleClass="px-6"
               />

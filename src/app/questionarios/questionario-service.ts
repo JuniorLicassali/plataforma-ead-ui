@@ -54,4 +54,13 @@ export class QuestionarioService {
     return firstValueFrom(this.http.post<any>(`${this.URL}/${cursoId}/questionarios/${questionarioId}/respostas`, respostas))
   }
 
+  verificarAprovacao(cursoId: number): Promise<any> {
+    return firstValueFrom(this.http.get<any>(`${this.URL}/${cursoId}/questionarios/resultado`));
+  }
+  gerarCertificado(cursoId: number): Promise<Blob> {
+    const url = `http://localhost:8080/certificados/cursos/${cursoId}`;
+
+    return firstValueFrom(this.http.get(url, {responseType: 'blob'}));
+  }
+
 }

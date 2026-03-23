@@ -11,7 +11,7 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { Pergunta } from '../../core/model';
 import { Dialog } from 'primeng/dialog';
 import { QuestionarioService } from '../questionario-service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ErrorHandlerService } from '../../core/error-handler-service';
 
 @Component({
@@ -26,7 +26,8 @@ import { ErrorHandlerService } from '../../core/error-handler-service';
     TimelineModule,
     ProgressBarModule,
     Dialog,
-  ],
+    RouterLink
+],
   templateUrl: './questionario-pesquisa.html',
   styleUrl: './questionario-pesquisa.scss',
 })
@@ -39,6 +40,9 @@ export class Questionario implements OnInit {
 
   exibirInstrucoes = signal(true);
   questionarioIniciado = signal(false);
+  questionarioFinalizado = signal(false);
+  enviando = signal(false);
+  nota: number = 0;
 
   tempoRestante = signal('00:00');
   timer: any;
@@ -49,7 +53,8 @@ export class Questionario implements OnInit {
 
   ngOnInit() {
     this.carregarDadosDaNavegacao();
-    this.carregarEstadoAnterior();
+    
+    this.verificarStatusQuestionario();
   }
 
   proximaPergunta() {
@@ -86,11 +91,16 @@ export class Questionario implements OnInit {
       resposta: p.respostaSelecionada || null,
     }));
 
+    this.enviando.set(true);
+
     this.questionarioService.enviarResultado(this.cursoId, this.questionarioId, payload)
       .then(() => {
         this.limparLocalStorage();
+        
+        window.location.reload();
       })
       .catch((erro) => {
+        this.enviando.set(false);
         this.errorHandler.handle(erro);
       });
     console.log(payload);
@@ -118,6 +128,38 @@ export class Questionario implements OnInit {
 
       this.tempoRestante.set(`${min}:${seg}`);
     }, 1000);
+  }
+
+  verificarStatusQuestionario() {
+    this.questionarioService.verificarAprovacao(this.cursoId)
+      .then((res => {
+        this.questionarioFinalizado.set(res.finalizado);
+        this.nota = res.nota;
+
+        if (res.finalizado) {
+        this.limparLocalStorage();
+        this.exibirInstrucoes.set(false);
+        this.questionarioIniciado.set(false);
+      } else {
+        this.carregarEstadoAnterior();
+      }
+      }))
+      .catch((erro) => {
+      this.carregarEstadoAnterior();
+    });
+  }
+
+  gerarCertificado() {
+    this.questionarioService.gerarCertificado(this.cursoId)
+      .then((blob: Blob) => {
+        const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Certificado_Curso.pdf`;
+      link.click();
+      window.URL.revokeObjectURL(url);
+      })
+      .catch(erro => this.errorHandler.handle(erro));
   }
 
   private carregarDadosDaNavegacao() {
