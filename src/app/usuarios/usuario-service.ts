@@ -19,7 +19,7 @@ export class UsuarioService {
     const headers = new HttpHeaders().set('Accept', 'image/jpeg, image/png');
 
     return firstValueFrom(this.http.get(`${this.URL}/${usuarioId}/foto`, 
-        { headers: headers, responseType: 'blob' }));
+      { headers: headers, responseType: 'blob' }));
   }
 
   uploadFoto(usuarioId: number, arquivo: File): Promise<any> {
@@ -28,5 +28,16 @@ export class UsuarioService {
 
     return firstValueFrom(this.http.put<any>(`${this.URL}/${usuarioId}/foto`, formData));
   }
+
+  atualizar(usuarioId: number, dados: any): Promise<any> {
+    return firstValueFrom(this.http.put<any>(`${this.URL}/${usuarioId}`, dados));
+  }
+
+  alterarSenha(usuarioId: number, dados: any): Promise<any> {
+    return firstValueFrom(this.http.put<any>(`${this.URL}/${usuarioId}/senha`, dados));
+  }
+  
+
+
 
 }

@@ -20,6 +20,7 @@ export class Navbar {
     this.items = [
       { label: 'Meus Cursos', icon: 'pi pi-book', routerLink: '/cursos/matriculados' },
       { label: 'Adicionar Curso', icon: 'pi pi-plus', routerLink: '/admin/cursos' },
+      { label: 'Perfil', icon: 'pi pi-user', routerLink: '/minha-conta' },
       { separator: true },
       { label: 'Sair', icon: 'pi pi-sign-out', command: () => this.logout() }
     ];

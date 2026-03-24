@@ -11,6 +11,7 @@
             <div class="hidden md:flex align-items-center gap-3">
                 <a class="text-600 font-medium cursor-pointer no-underline hover:text-primary" routerLink="/cursos/matriculados">Meus Cursos</a>
                 <a class="text-600 font-medium cursor-pointer no-underline hover:text-primary" routerLink="/admin/cursos">Adicionar Curso</a>
+                <a class="text-600 font-medium cursor-pointer no-underline hover:text-primary" routerLink="/minha-conta">Perfil</a>
             </div>
 
             <button pButton icon="pi pi-bars" class="md:hidden p-button-text p-button-secondary" (click)="menu.toggle($event)"></button>
@@ -19,7 +20,6 @@
             
             <button pButton icon="pi pi-sign-out" class="p-button-text p-button-secondary hidden md:flex" (click)="logout()"></button>
             
-            <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" shape="circle" size="large"></p-avatar>
         </div>
     </div>
 </div>

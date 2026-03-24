@@ -57,6 +57,7 @@ export class QuestionarioService {
   verificarAprovacao(cursoId: number): Promise<any> {
     return firstValueFrom(this.http.get<any>(`${this.URL}/${cursoId}/questionarios/resultado`));
   }
+  
   gerarCertificado(cursoId: number): Promise<Blob> {
     const url = `http://localhost:8080/certificados/cursos/${cursoId}`;
 

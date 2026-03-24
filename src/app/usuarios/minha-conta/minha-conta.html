@@ -1,82 +1,117 @@
 <div class="container mt-5">
   <h2 class="mb-4 font-bold text-2xl text-900">Configurações da Conta</h2>
 
-  <p-panel header="Perfil" styleClass="mb-4 shadow-1">
-    <div class="grid p-fluid">
-      <div
-        class="col-12 md:col-4 flex flex-column align-items-center justify-content-center gap-3 border-right-1 border-200"
-      >
+  <form [formGroup]="formulario">
+    <p-panel header="Perfil" class="mb-4 shadow-1 border-round-xl">
+      <div class="grid p-fluid">
         <div
-          class="w-8rem h-8rem shadow-2 border-circle overflow-hidden flex align-items-center justify-content-center bg-gray-100 border-1 border-200"
+          class="col-12 md:col-4 flex flex-column align-items-center justify-content-center gap-3 border-right-1 border-200"
         >
-          @if (fotoUrl) {
-            <img
-              [src]="fotoUrl"
-              alt="Foto do usuário"
-              style="width: 100%; height: 100%; object-fit: cover"
+          <div
+            class="w-8rem h-8rem shadow-2 border-circle overflow-hidden flex align-items-center justify-content-center bg-gray-100 border-1 border-200"
+          >
+            @if (fotoUrl) {
+              <img
+                [src]="fotoUrl"
+                alt="Foto do usuário"
+                style="width: 100%; height: 100%; object-fit: cover"
+              />
+            } @else {
+              <i class="pi pi-user text-4xl text-400"></i>
+            }
+          </div>
+          <p-fileUpload
+            #fileUploadComponent
+            mode="basic"
+            name="arquivo"
+            chooseLabel="Alterar Foto"
+            chooseIcon="pi pi-camera"
+            class="p-button-sm"
+            accept="image/*"
+            maxFileSize="2000000"
+            (onSelect)="onSelecionarFoto($event)"
+          >
+          </p-fileUpload>
+          <small class="text-secondary">JPG ou PNG, máx 2MB</small>
+        </div>
+
+        <div class="col-12 md:col-8 p-3">
+          <div class="field mb-3">
+            <label for="nome" class="block font-medium mb-2">Nome Completo</label>
+            <input
+              class="w-full"
+              formControlName="nome"
+              pInputText
+              id="nome"
+              placeholder="Como quer ser chamado?"
             />
-          } @else {
-            <i class="pi pi-user text-4xl text-400"></i>
-          }
-        </div>
-        <p-fileUpload
-          mode="basic"
-          name="arquivo"
-          chooseLabel="Alterar Foto"
-          chooseIcon="pi pi-camera"
-          class="p-button-sm"
-          accept="image/*"
-          maxFileSize="2000000"
-        >
-        </p-fileUpload>
-        <small class="text-secondary">JPG ou PNG, máx 2MB</small>
-      </div>
+          </div>
 
-      <div class="col-12 md:col-8 p-3">
-        <div class="field mb-3">
-          <label for="nome" class="block font-medium mb-2">Nome Completo</label>
-          <input pInputText id="nome" placeholder="Como quer ser chamado?" />
-        </div>
-
-        <div class="field">
-          <label for="email" class="block font-medium mb-2">E-mail (Inalterável)</label>
-          <div class="p-inputgroup">
-            <span class="p-inputgroup-addon"><i class="pi pi-envelope"></i></span>
-            <input pInputText id="email" [disabled]="true" />
+          <div class="field">
+            <label for="email" class="block font-medium mb-2">E-mail (Inalterável)</label>
+            <p-icon-field iconPosition="left">
+              <p-inputicon class="pi pi-envelope"></p-inputicon>
+              <input pInputText id="email" formControlName="email" class="w-full" />
+            </p-icon-field>
           </div>
         </div>
       </div>
-    </div>
-  </p-panel>
+    </p-panel>
+  </form>
 
-  <p-panel header="Alterar Senha" [toggleable]="true" [collapsed]="true" styleClass="mb-4 shadow-1">
-    <div class="p-fluid grid">
-      <div class="col-12 md:col-6 field">
-        <label class="block font-medium mb-2">Nova Senha</label>
-        <p-password [toggleMask]="true" promptLabel="Crie uma senha forte"></p-password>
-      </div>
-      <div class="col-12 md:col-6 field">
-        <label class="block font-medium mb-2">Confirmar Nova Senha</label>
-        <p-password [toggleMask]="true" [feedback]="false"></p-password>
-      </div>
-    </div>
-    <ng-template pTemplate="footer">
-      <div class="flex justify-content-end">
-        <p-button
-          label="Validar e Trocar"
-          icon="pi pi-shield"
-          styleClass="p-button-warning p-button-sm"
-        ></p-button>
-      </div>
-    </ng-template>
-  </p-panel>
+  <form [formGroup]="formularioSenha">
+    <p-panel
+      header="Alterar Senha"
+      [toggleable]="true"
+      [collapsed]="true"
+      class="mb-4 shadow-1 border-round-xl"
+    >
+      <div class="p-fluid">
+        <div class="field">
+          <label for="senhaAtual">Senha Atual</label>
+          <p-password
+            id="senhaAtual"
+            formControlName="senhaAtual"
+            [toggleMask]="true"
+            [feedback]="false"
+            styleClass="w-full"
+            inputStyleClass="w-full"
+          ></p-password>
+        </div>
 
-  <div class="flex justify-content-end align-items-center gap-3 mt-4">
+        <div class="field">
+          <label for="novaSenha">Nova Senha</label>
+          <p-password
+            id="novaSenha"
+            formControlName="novaSenha"
+            [feedback]="false"
+            [toggleMask]="true"
+            styleClass="w-full"
+            inputStyleClass="w-full"
+          ></p-password>
+        </div>
+      </div>
+      <ng-template pTemplate="footer">
+        <div class="flex justify-content-end">
+          <p-button
+            label="Validar e Trocar"
+            icon="pi pi-shield"
+            styleClass="p-button-warning p-button-sm"
+            (click)="alterarSenha()"
+            [disabled]="formularioSenha.invalid"
+          ></p-button>
+        </div>
+      </ng-template>
+    </p-panel>
+  </form>
+
+  <div class="flex justify-content-end mt-4">
     <p-button
-      label="Descartar"
-      icon="pi pi-trash"
-      styleClass="p-button-text p-button-danger"
+      label="Salvar Alterações"
+      icon="pi pi-check"
+      severity="success"
+      (click)="salvarPerfil()"
+      [disabled]="formulario.invalid"
     ></p-button>
-    <p-button label="Salvar Alterações" icon="pi pi-check" severity="success"></p-button>
   </div>
 </div>
