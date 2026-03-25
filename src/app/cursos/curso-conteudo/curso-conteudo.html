@@ -45,7 +45,8 @@
           <p-accordion-panel [value]="i">
             <p-accordion-header>{{ modulo.nome }}</p-accordion-header>
             <p-accordion-content>
-              <p-listbox
+              <p-listbox 
+                scrollHeight="auto"
                 [options]="modulo.aulas"
                 [(ngModel)]="aulaSelecionada"
                 (onChange)="onAulaChange($event)"

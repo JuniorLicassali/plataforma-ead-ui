@@ -93,4 +93,8 @@ export class CursoCadastro implements OnInit {
   
   }
 
+  prepararEdicaoConteudo(cursoId: number) {
+    this.router.navigate(['/admin/cursos', cursoId, 'modulos']);
+  }
+
 }

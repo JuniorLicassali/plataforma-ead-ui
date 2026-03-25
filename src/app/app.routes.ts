@@ -9,6 +9,7 @@ import { authGuard } from './seguranca/auth-guard';
 import { CursoCadastro } from './cursos/curso-cadastro/curso-cadastro';
 import { CursoMatriculado } from './cursos/curso-matriculado/curso-matriculado';
 import { MinhaConta } from './usuarios/minha-conta/minha-conta';
+import { CursoModulos } from './cursos/curso-modulos/curso-modulos';
 
 export const routes: Routes = [
     { path: 'cursos', component: CardsCursos, canActivate: [authGuard] },
@@ -20,6 +21,8 @@ export const routes: Routes = [
     { path: 'admin/cursos', component: CursoCadastro, canActivate: [authGuard] },
     { path: 'admin/questionarios', component: QuestionarioCadastro, canActivate: [authGuard] },
     { path: 'minha-conta', component: MinhaConta, canActivate: [authGuard] },
+    { path: 'admin/cursos/:cursoId/modulos', component: CursoModulos, canActivate: [authGuard] },
+    
     
     
     { path: '', redirectTo: 'cursos', pathMatch: 'full' },

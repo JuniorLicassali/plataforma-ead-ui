@@ -1,0 +1,81 @@
+<div class="container mt-4 px-3 md:px-0">
+  <div class="flex flex-column md:flex-row justify-content-between align-items-start md:align-items-center gap-3 mb-4">
+    <h2 class="text-900 font-bold m-0">Conteúdo do Curso</h2>
+    <p-button label="Novo Módulo" icon="pi pi-plus" severity="primary" class="w-full md:w-auto" (click)="prepararNovoModulo()"></p-button>
+  </div>
+
+  <p-accordion [multiple]="true" [value]="[]">
+    @for (modulo of modulos(); track modulo.id) {
+      <p-accordion-panel [value]="modulo.id">
+        
+        <p-accordion-header>
+          <div class="flex flex-wrap align-items-center justify-content-between w-full gap-2 pr-3">
+            <span class="font-bold white-space-normal">{{ modulo.nome }}</span>
+            <div class="flex gap-2">
+              <p-button icon="pi pi-plus" label="Aula" severity="success" size="small" 
+                (click)="prepararNovaAula(modulo.id); $event.stopPropagation()"></p-button>
+              <p-button icon="pi pi-trash" severity="danger" size="small" [text]="true" 
+                (click)="confirmarExclusao(+modulo.id); $event.stopPropagation()"></p-button>
+            </div>
+          </div>
+        </p-accordion-header>
+
+        <p-accordion-content>
+          <p-table [value]="modulo.aulas" styleClass="p-datatable-sm" [responsiveLayout]="'stack'" [breakpoint]="'768px'">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Ordem</th>
+                <th>Título</th>
+                <th>Vídeo</th>
+                <th style="width: 10rem">Ações</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-aula>
+              <tr>
+                <td>
+                  <span class="p-column-title font-bold md:hidden">Ordem:</span>
+                  {{ aula.ordem }}
+                </td>
+                <td class="white-space-normal">
+                  <span class="p-column-title font-bold md:hidden">Título:</span>
+                  {{ aula.titulo }}
+                </td>
+                <td>
+                  <span class="p-column-title font-bold md:hidden">Vídeo:</span>
+                  @if (aula.urlVideo) {
+                    <p-tag value="Com Vídeo" severity="success"></p-tag>
+                  } @else {
+                    <p-tag value="Sem Vídeo"></p-tag>
+                  }
+                </td>
+                <td>
+                  <span class="p-column-title font-bold md:hidden">Ações:</span>
+                  <div class="flex gap-2 mt-2 md:mt-0">
+                    <p-button [disabled]="true" icon="pi pi-video" severity="info" size="small"></p-button>
+                    <p-button [disabled]="true" icon="pi pi-pencil" severity="secondary" size="small"></p-button>
+                    <p-button icon="pi pi-trash" severity="danger" size="small" (click)="excluirAula(+modulo.id, aula.id)"></p-button>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-accordion-content>
+
+      </p-accordion-panel>
+    }
+  </p-accordion>
+
+
+  @if (exibirDialog()) {
+    <app-curso-modulos-dialog
+    [modo]="modoDialog()"
+    [moduloId]="moduloId"
+    [subindoVideo]="subindoVideo()"
+    [progresso]="progressoUpload()"
+    (onSalvar)="decidirSalvar($event)"
+    (onCancelar)="fecharDialog()"/>
+  }
+
+</div>
+
+<p-confirmDialog />

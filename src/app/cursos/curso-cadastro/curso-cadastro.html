@@ -28,6 +28,7 @@
                 <th>Descrição</th>
                 <th>Preço</th>
                 <th>Status</th>
+                <th>Módulos e Aulas</th>
               </tr>
             </ng-template>
             <ng-template #body let-curso>
@@ -55,6 +56,16 @@
                     {{ curso.ativo ? 'Ativo' : 'Inativo' }}
                   </a>
                 </td>
+
+                <td>
+                  <button
+                    pButton
+                    icon="pi pi-pencil"
+                    (click)="prepararEdicaoConteudo(curso.id)"
+                    class="p-button-text p-button-sm"
+                  ></button>
+                </td>
+                
               </tr>
             </ng-template>
           </p-table>

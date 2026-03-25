@@ -39,10 +39,9 @@ export interface Curso extends CursoResumido {
 }
 
 export interface Modulo {
-  id?: string;
+  id: string;
   nome?: string;
   descricao?: string;
-  ordem?: number;
   aulas: Aula[];
 }
 

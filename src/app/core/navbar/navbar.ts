@@ -1,10 +1,12 @@
 import { Component, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
+
 import { MenuItem } from 'primeng/api';
 import { AvatarModule } from 'primeng/avatar';
-import { RouterLink } from '@angular/router';
-import { AuthService } from '../../seguranca/auth-service';
 import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
+
+import { AuthService } from '../../seguranca/auth-service';
 
 @Component({
   selector: 'app-navbar',
@@ -19,7 +21,7 @@ export class Navbar {
   ngOnInit() {
     this.items = [
       { label: 'Meus Cursos', icon: 'pi pi-book', routerLink: '/cursos/matriculados' },
-      { label: 'Adicionar Curso', icon: 'pi pi-plus', routerLink: '/admin/cursos' },
+      { label: 'Gerenciar Cursos', icon: 'pi pi-plus', routerLink: '/admin/cursos' },
       { label: 'Perfil', icon: 'pi pi-user', routerLink: '/minha-conta' },
       { separator: true },
       { label: 'Sair', icon: 'pi pi-sign-out', command: () => this.logout() }

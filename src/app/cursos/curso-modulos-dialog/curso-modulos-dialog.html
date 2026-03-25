@@ -1,0 +1,136 @@
+@if (modo === 'AULA') {
+  <p-dialog
+    (onHide)="onCancelar.emit()"
+    [visible]="true"
+    header="Nova Aula"
+    [modal]="true"
+    [style]="{ width: '45rem' }"
+    [breakpoints]="{ '640px': '95vw' }"
+    [closable]="!subindoVideo"
+  >
+    <form [formGroup]="formulario" class="flex flex-column gap-4">
+      
+      <div class="flex flex-column gap-2">
+        <label class="font-bold">Título da Aula</label>
+        <input pInputText formControlName="titulo" placeholder="Ex: Introdução ao Spring Boot" class="w-full" />
+      </div>
+
+      <div class="flex flex-column gap-2">
+        <label class="font-bold">Ordem</label>
+        <p-inputNumber formControlName="ordem" [showButtons]="true" placeholder="1" styleClass="w-full" />
+      </div>
+
+      <div class="flex flex-column gap-2">
+        <label class="font-bold">Descrição da Aula</label>
+        <textarea
+          rows="3"
+          style="resize: none"
+          pInputTextarea
+          formControlName="descricao"
+          placeholder="O que será ensinado nesta aula?"
+          class="w-full"
+        ></textarea>
+      </div>
+
+      <div class="flex flex-column gap-2">
+        <label class="font-bold">Vídeo da Aula (MP4)</label>
+        <p-fileUpload 
+          mode="basic" 
+          chooseLabel="Selecionar Vídeo" 
+          (onSelect)="onSelecionarVideo($event)"
+          accept="video/*" 
+          maxFileSize="100000000" 
+          styleClass="w-full"
+          [disabled]="subindoVideo"
+        ></p-fileUpload>
+        
+        @if (videoSelecionado) {
+          <small class="text-green-600 font-medium">
+            <i class="pi pi-check"></i> {{ videoSelecionado.name }} selecionado.
+          </small>
+        }
+      </div>
+
+      @if (subindoVideo) {
+        <div class="mt-2">
+          <div class="flex justify-content-between mb-1">
+            <span class="text-sm font-bold text-primary">
+              {{ progresso === 100 ? 'Processando conteúdo...' : 'Enviando vídeo...' }}
+            </span>
+            <span class="text-sm font-bold text-primary">{{ progresso }}%</span>
+          </div>
+          <p-progressBar [value]="progresso" [showValue]="false" [style]="{ height: '8px' }"></p-progressBar>
+        </div>
+      }
+
+      <div class="flex justify-content-end gap-2">
+        <p-button 
+          label="Cancelar" 
+          (click)="onCancelar.emit()" 
+          severity="secondary" 
+          [text]="true" 
+          [disabled]="subindoVideo" 
+        />
+        
+        <p-button 
+          label="Salvar Aula" 
+          [icon]="subindoVideo ? 'pi pi-spin pi-spinner' : 'pi pi-save'"
+          (click)="salvarAula()" 
+          [disabled]="formulario.invalid || !videoSelecionado || subindoVideo"
+          [loading]="subindoVideo"
+        />
+      </div>
+    </form>
+  </p-dialog>
+} @else if (modo === 'MODULO') {
+  <p-dialog
+    (onHide)="onCancelar.emit()"
+    [visible]="true"
+    header="Novo Módulo"
+    [modal]="true"
+    [style]="{ width: '45rem' }"
+    [breakpoints]="{ '640px': '95vw' }"
+  >
+    <form [formGroup]="formulario" class="flex flex-column gap-4">
+      
+      <div class="flex flex-column gap-2">
+        <label class="font-bold">Nome do Módulo</label>
+        <input pInputText formControlName="nome" placeholder="Ex: Fundamentos do Java" class="w-full" />
+      </div>
+
+      <div class="flex flex-column gap-2">
+        <label class="font-bold">Ordem</label>
+        <p-inputNumber formControlName="ordem" [showButtons]="true" placeholder="1" styleClass="w-full" />
+      </div>
+
+      <div class="flex flex-column gap-2">
+        <label class="font-bold">Descrição do Módulo</label>
+        <textarea
+          rows="3"
+          style="resize: none"
+          pInputTextarea
+          formControlName="descricao"
+          placeholder="O que será abordado neste módulo?"
+          class="w-full"
+        ></textarea>
+      </div>
+
+      <div class="flex justify-content-end gap-2 mt-2">
+        <p-button 
+          label="Cancelar" 
+          (click)="onCancelar.emit()" 
+          severity="secondary" 
+          [text]="true" 
+        />
+        
+        <p-button 
+          label="Salvar Módulo" 
+          icon="pi pi-save"
+          (click)="salvarModulo()" 
+          [disabled]="formulario.invalid"
+        />
+      </div>
+    </form>
+  </p-dialog>
+}
+

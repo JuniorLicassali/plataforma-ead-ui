@@ -1,8 +1,8 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { Aula, Curso, CursoResumido, Matricula } from '../core/model';
-import { firstValueFrom } from 'rxjs';
+import { Aula, Curso, CursoResumido, Matricula, Modulo } from '../core/model';
+import { firstValueFrom, Observable } from 'rxjs';
 import GenericTree from '../core/utils/generic-tree';
 
 export class CursoFiltro {
@@ -79,11 +79,40 @@ export class CursoService {
   }
 
   verificarStatusMatricula(usuarioId: number, cursoId: number): Promise<any> {
-    const params = new HttpParams()
-      .set('usuarioId', usuarioId)
-      .set('cursoId', cursoId);
+    const params = new HttpParams().set('usuarioId', usuarioId).set('cursoId', cursoId);
 
-    return firstValueFrom(this.http.get<any>(`${environment.apiUrl}/matriculas/status`, {params}));
+    return firstValueFrom(
+      this.http.get<any>(`${environment.apiUrl}/matriculas/status`, { params }),
+    );
+  }
+
+  listarModulos(cursoId: number): Promise<Modulo[]> {
+    return firstValueFrom(this.http.get<Modulo[]>(`${this.URL}/${cursoId}/modulos`));
+  }
+
+  adicionarModulo(cursoId: number, dados: any): Promise<any> {
+    return firstValueFrom(this.http.post<any>(`${this.URL}/${cursoId}/modulos`, dados));
+  }
+
+  excluirModulo(cursoId: number, moduloId: number): Promise<void> {
+    return firstValueFrom(this.http.delete<void>(`${this.URL}/${cursoId}/modulos/${moduloId}`))
+  }
+
+  adicionarAula(cursoId: number, moduloId: number, aulaInput: any, videoFile: File): Observable<HttpEvent<any>> {
+    const formData = new FormData();
+    const aulaJsonBlob = new Blob([JSON.stringify(aulaInput)], { type: 'application/json' });
+
+    formData.append('aulaInput', aulaJsonBlob);
+    formData.append('video', videoFile);
+
+    return this.http.post<any>(`${this.URL}/${cursoId}/modulos/${moduloId}/aulas`, formData, {
+      reportProgress: true,
+      observe: 'events',
+    });
+  }
+
+  excluirAula(cursoId: number, moduloId: number, aulaId: number): Promise<void> {
+    return firstValueFrom(this.http.delete<void>(`${this.URL}/${cursoId}/modulos/${moduloId}/aulas/${aulaId}`))
   }
 
   construirArvorDeAulas(curso: Curso) {
