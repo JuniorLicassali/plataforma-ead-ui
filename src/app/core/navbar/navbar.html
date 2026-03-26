@@ -1,25 +1,53 @@
 <div class="surface-card shadow-1 border-bottom-1 border-300 flex justify-content-center p-3">
-    <div class="w-full flex align-items-center justify-content-between" style="max-width: 1200px;">
-        
-        <div class="flex align-items-center gap-2 cursor-pointer" routerLink="/cursos">
-            <i class="pi pi-book text-primary text-2xl"></i>
-            <span class="font-bold text-lg text-900">PLATAFORMA EAD</span>
-        </div>
-
-        <div class="flex align-items-center gap-3">
-            
-            <div class="hidden md:flex align-items-center gap-3">
-                <a class="text-600 font-medium cursor-pointer no-underline hover:text-primary" routerLink="/cursos/matriculados">Meus Cursos</a>
-                <a class="text-600 font-medium cursor-pointer no-underline hover:text-primary" routerLink="/admin/cursos">Gerenciar Cursos</a>
-                <a class="text-600 font-medium cursor-pointer no-underline hover:text-primary" routerLink="/minha-conta">Perfil</a>
-            </div>
-
-            <button pButton icon="pi pi-bars" class="md:hidden p-button-text p-button-secondary" (click)="menu.toggle($event)"></button>
-            <p-menu #menu [model]="items" [popup]="true" position="left"></p-menu>
-
-            
-            <button pButton icon="pi pi-sign-out" class="p-button-text p-button-secondary hidden md:flex" (click)="logout()"></button>
-            
-        </div>
+  <div class="w-full flex align-items-center justify-content-between" style="max-width: 1200px">
+    <div class="flex align-items-center gap-2 cursor-pointer" routerLink="/cursos">
+      <i class="pi pi-book text-primary text-2xl"></i>
+      <span class="font-bold text-lg text-900">PLATAFORMA EAD</span>
     </div>
+
+    <div class="flex align-items-center gap-3">
+      <div class="hidden md:flex align-items-center gap-3">
+        <a
+          class="navbar-menu text-600 font-medium cursor-pointer no-underline"
+          routerLink="/cursos/matriculados"
+          routerLinkActive="active-link"
+          [routerLinkActiveOptions]="{ exact: false }"
+          >Meus Cursos</a
+        >
+
+        @if (temPermissao('EDITAR_CURSOS')) {
+          <a
+            class="navbar-menu text-600 font-medium cursor-pointer no-underline"
+            routerLink="/admin/cursos"
+            routerLinkActive="active-link"
+            [routerLinkActiveOptions]="{ exact: false }"
+            >Gerenciar Cursos</a
+          >
+        }
+
+        <a
+          class="navbar-menu text-600 font-medium cursor-pointer no-underline"
+          routerLink="/minha-conta"
+          routerLinkActive="active-link"
+          [routerLinkActiveOptions]="{ exact: false }"
+          >Perfil</a
+        >
+      </div>
+
+      <button
+        pButton
+        icon="pi pi-bars"
+        class="md:hidden p-button-text p-button-secondary"
+        (click)="menu.toggle($event)"
+      ></button>
+      <p-menu #menu [model]="items" [popup]="true" position="left"></p-menu>
+
+      <button
+        pButton
+        icon="pi pi-sign-out"
+        class="p-button-text p-button-secondary hidden md:flex"
+        (click)="logout()"
+      ></button>
+    </div>
+  </div>
 </div>

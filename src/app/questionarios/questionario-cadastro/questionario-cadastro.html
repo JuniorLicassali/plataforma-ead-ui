@@ -48,8 +48,11 @@
             <h3 class="mt-0 mb-3">Questionários Cadastrados</h3>
             <p-table
               [value]="questionariosParaExibir()"
+              [rows]="filtro.itensPorPagina"
               [paginator]="true"
-              [rows]="10"
+              [lazy]="true"
+              [totalRecords]="totalRegistros()"
+              (onLazyLoad)="aoMudarPagina($event)"
               class="p-datatable-sm"
             >
               <ng-template pTemplate="header">
@@ -96,6 +99,9 @@
           <p-card class="shadow-2">
             <p-table
               [value]="questionario().perguntas"
+              [rows]="10"
+              [paginator]="questionario().perguntas.length > 10"
+              [lazy]="false"
               responsiveLayout="stack"
               [breakpoint]="'980px'"
               class="p-datatable-sm"
@@ -132,6 +138,33 @@
                         (click)="confirmarExclusao(pergunta)"
                         class="p-button-danger p-button-text p-button-sm"
                       ></button>
+                    </div>
+                  </td>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td colspan="3">
+                    <div class="flex flex-column align-items-center justify-content-center p-5 w-full">
+                      <div class="surface-100 border-circle p-3 mb-3">
+                        <i class="pi pi-question-circle text-400" style="font-size: 2rem"></i>
+                      </div>
+                      
+                      <span class="text-900 font-bold text-xl mb-2">
+                        Nenhuma pergunta por aqui
+                      </span>
+                      
+                      <span class="text-600 mb-4">
+                        O questionário ainda não possui perguntas cadastradas.
+                      </span>
+
+                      <p-button 
+                        label="Adicionar Primeira Pergunta" 
+                        icon="pi pi-plus" 
+                        [text]="true"
+                        (click)="prepararNovaPergunta()">
+                      </p-button>
                     </div>
                   </td>
                 </tr>

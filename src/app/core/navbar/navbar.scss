@@ -1,4 +1,23 @@
-:host ::ng-deep .p-menu.p-menu-overlay {
-    left: auto !important;
-    right: 1rem;
+:host ::ng-deep {
+    .p-menu.p-menu-overlay {
+        left: auto !important;
+        right: 1rem;
+    }
+
+    a.active-link, 
+    a.navbar-menu:hover {
+        color: #10b981 !important;
+        border-bottom: 2px solid #10b981 !important;
+        padding-bottom: 4px !important;
+        font-weight: 500 !important;
+        display: inline-block !important;
+        text-decoration: none !important;
+        transition: all 0.2s ease-in-out;
+    }
+
+    a.navbar-menu:not(.active-link) {
+        border-bottom: 2px solid transparent;
+        transition: all 0.2s ease-in-out;
+    }
+
 }

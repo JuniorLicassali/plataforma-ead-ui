@@ -6,7 +6,7 @@ import { ButtonModule } from 'primeng/button';
 
 import { SelectModule } from 'primeng/select';
 import { CardModule } from 'primeng/card';
-import { TableModule } from 'primeng/table';
+import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { Curso, CursoResumido, PerguntaCadastro, QuestionarioCadastroProf } from '../../core/model';
 import { QuestionarioService } from '../questionario-service';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -16,6 +16,7 @@ import { PerguntaDialog } from '../questionario-pergunta-dialog/questionario-per
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { TagModule } from 'primeng/tag';
+import { CursoFiltro } from '../../cursos/curso-service';
 
 @Component({
   selector: 'app-questionario-cadastro',
@@ -37,6 +38,7 @@ import { TagModule } from 'primeng/tag';
 })
 export class QuestionarioCadastro implements OnInit {
   cursos = signal<CursoResumido[]>([]);
+  cursosPaginados = signal<CursoResumido[]>([]);
   cursoId!: number;
   questionarioId!: number;
   nomeQuestionario = '';
@@ -52,6 +54,9 @@ export class QuestionarioCadastro implements OnInit {
   exibirDialog = signal(false);
   perguntaParaEnviar = signal<PerguntaCadastro | null>(null);
   indiceSelecionado: number | null = null;
+
+  filtro = new CursoFiltro();
+  totalRegistros = signal<number>(0);
 
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -86,7 +91,7 @@ export class QuestionarioCadastro implements OnInit {
   }
 
   questionariosParaExibir = computed(() => {
-    return this.cursos()
+    return this.cursosPaginados()
       .filter((curso) => curso.questionario && curso.questionario.id)
       .map((curso) => ({
         cursoNome: curso.nome,
@@ -216,6 +221,23 @@ export class QuestionarioCadastro implements OnInit {
     this.exibirDialog.set(false);
     this.perguntaParaEnviar.set(null);
     this.indiceSelecionado = null;
+  }
+
+  listar(pagina: number = 0): void {
+    this.filtro.pagina = pagina;
+
+    this.questionarioService
+      .listarResumido(this.filtro)
+      .then((res: any) => {
+        this.cursosPaginados.set(res.content);
+        this.totalRegistros.set(res.totalElements);
+      })
+      .catch((erro) => this.errorHandler.handle(erro));
+  }
+
+  aoMudarPagina(event: TableLazyLoadEvent) {
+    const pagina = event!.first! / event!.rows!;
+    this.listar(pagina);
   }
 
   private chamarCarregarQuestionario() {

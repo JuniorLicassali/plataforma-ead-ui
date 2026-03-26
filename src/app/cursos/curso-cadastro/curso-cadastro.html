@@ -18,6 +18,11 @@
         <p-card class="shadow-2">
           <p-table
             [value]="cursos()"
+            [rows]="filtro.itensPorPagina"
+            [paginator]="true"
+            [lazy]="true"
+            [totalRecords]="totalRegistros()"
+            (onLazyLoad)="aoMudarPagina($event)"
             responsiveLayout="stack"
             [breakpoint]="'980px'"
             class="p-datatable-sm"
@@ -28,7 +33,7 @@
                 <th>Descrição</th>
                 <th>Preço</th>
                 <th>Status</th>
-                <th>Módulos e Aulas</th>
+                <th>Conteúdo</th>
               </tr>
             </ng-template>
             <ng-template #body let-curso>
@@ -58,12 +63,14 @@
                 </td>
 
                 <td>
+                    <span class="p-column-title font-bold custom-hidden">Conteúdo</span>
                   <button
                     pButton
                     icon="pi pi-pencil"
                     (click)="prepararEdicaoConteudo(curso.id)"
                     class="p-button-text p-button-sm"
                   ></button>
+                  
                 </td>
                 
               </tr>

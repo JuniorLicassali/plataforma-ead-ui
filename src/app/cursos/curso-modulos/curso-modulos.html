@@ -62,7 +62,28 @@
         </p-accordion-content>
 
       </p-accordion-panel>
+    }  @empty {
+      <div class="empty-state-card">
+        <div class="empty-state-icon">
+          <i class="pi pi-folder-open"></i>
+        </div>
+        
+        <h3 class="empty-state-title">Nenhum conteúdo por aqui</h3>
+        
+        <p class="empty-state-description">
+          Parece que você ainda não cadastrou nada. <br> 
+          Clique no botão abaixo para começar.
+        </p>
+
+        <p-button 
+          label="Começar agora" 
+          icon="pi pi-plus" 
+          [outlined]="true"
+          (click)="prepararNovoModulo()">
+        </p-button>
+      </div>
     }
+    
   </p-accordion>
 
 

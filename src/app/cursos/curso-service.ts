@@ -11,7 +11,7 @@ export class CursoFiltro {
   precoMax?: number;
   ativo?: boolean;
   pagina: number = 0;
-  itensPorPagina: number = 4;
+  itensPorPagina: number = 8;
 }
 
 @Injectable({

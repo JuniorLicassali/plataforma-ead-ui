@@ -1,8 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { CursoResumido, QuestionarioCadastroProf, QuestionarioUsuario } from '../core/model';
 import { firstValueFrom } from 'rxjs';
+import { CursoFiltro } from '../cursos/curso-service';
 
 @Injectable({
   providedIn: 'root',
@@ -15,6 +16,14 @@ export class QuestionarioService {
 
   listarTodos(): Promise<CursoResumido[]> {
     return firstValueFrom(this.http.get<any>(`${this.URL}?size=999`)).then(res => res.content as CursoResumido[]);
+  }
+
+  listarResumido(filtro: CursoFiltro): Promise<any[]> {
+    let params = new HttpParams()
+      .set('page', filtro.pagina.toString())
+      .set('size', filtro.itensPorPagina.toString());
+
+    return firstValueFrom(this.http.get<any[]>(`${this.URL}`, { params }));
   }
 
   buscarPorCodigo(cursoId: number, questionarioId: number): Promise<QuestionarioCadastroProf> {

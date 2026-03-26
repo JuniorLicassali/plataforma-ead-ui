@@ -3,10 +3,10 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { Router, RouterLink } from '@angular/router';
 import { Card } from "primeng/card";
-import { TableModule } from "primeng/table";
+import { TableLazyLoadEvent, TableModule } from "primeng/table";
 import { Curso, CursoResumido } from '../../core/model';
 import { CursoFiltro, CursoService } from '../curso-service';
-import { LazyLoadEvent, MessageService } from 'primeng/api';
+import { MessageService } from 'primeng/api';
 import { ErrorHandlerService } from '../../core/error-handler-service';
 import { CursoCadastroDialog } from '../curso-cadastro-dialog/curso-cadastro-dialog';
 import { TooltipModule } from 'primeng/tooltip';
@@ -72,7 +72,7 @@ export class CursoCadastro implements OnInit {
       .catch((erro) => this.errorHandler.handle(erro));
   }
 
-  aoMudarPagina(event: LazyLoadEvent) {
+  aoMudarPagina(event: TableLazyLoadEvent) {
     const pagina = event!.first! / event!.rows!;
     this.listar(pagina);
   }
