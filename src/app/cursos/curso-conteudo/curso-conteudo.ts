@@ -15,6 +15,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CursoService } from '../curso-service';
 import { Aula, Curso, Modulo } from '../../core/model';
 import { ErrorHandlerService } from '../../core/error-handler-service';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-curso-conteudo',
@@ -41,6 +42,7 @@ export class CursoConteudo implements OnInit, AfterViewInit {
   private router = inject(Router);
   private cursoService = inject(CursoService);
   private errorHandler = inject(ErrorHandlerService);
+  private title = inject(Title);
 
   ngOnInit() {
     this.cursoId = Number(this.route.snapshot.paramMap.get('cursoId'));
@@ -48,6 +50,8 @@ export class CursoConteudo implements OnInit, AfterViewInit {
     this.buscarCurso(this.cursoId);
 
     this.iniciarEscutaDeVideo();
+
+    this.title.setTitle('Conteúdo do Curso');
   }
 
   ngAfterViewInit() {
@@ -128,12 +132,6 @@ export class CursoConteudo implements OnInit, AfterViewInit {
         this.activeIndex.set(index);
       }
     }
-
-    // if (this.videoElement) {
-    //   const video = this.videoElement.nativeElement;
-    //   video.load();
-    //   // video.play();
-    // }
   }
   
 }

@@ -7,6 +7,7 @@ import { Router, RouterLink } from "@angular/router";
 import { CursoResumido } from '../../core/model';
 import { AuthService } from '../../seguranca/auth-service';
 import { MessageService } from 'primeng/api';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-curso-matriculado',
@@ -27,9 +28,11 @@ export class CursoMatriculado implements OnInit {
   private messageService = inject(MessageService);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private title = inject(Title);
 
   ngOnInit() {
     this.listar();
+    this.title.setTitle('Meus Cursos')
   }
 
   listar(): void {

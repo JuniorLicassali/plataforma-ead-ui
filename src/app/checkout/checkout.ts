@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { CheckoutService } from './checkout-service';
 import { ErrorHandlerService } from '../core/error-handler-service';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-checkout',
@@ -23,9 +24,11 @@ export class Checkout implements OnInit, OnDestroy {
   private router = inject(Router);
   private checkoutService = inject(CheckoutService);
   private errorHandler = inject(ErrorHandlerService);
+  private title = inject(Title);
 
   ngOnInit() {
     this.carregarDadosDaNavegacao();
+    this.title.setTitle('Checkout');
   }
 
   ngOnDestroy() {

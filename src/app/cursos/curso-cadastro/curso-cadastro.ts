@@ -11,6 +11,7 @@ import { ErrorHandlerService } from '../../core/error-handler-service';
 import { CursoCadastroDialog } from '../curso-cadastro-dialog/curso-cadastro-dialog';
 import { TooltipModule } from 'primeng/tooltip';
 import { CurrencyPipe, SlicePipe } from '@angular/common';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-cursos-cadastrar',
@@ -33,9 +34,12 @@ export class CursoCadastro implements OnInit {
   private cursoService = inject(CursoService);
   private messageService = inject(MessageService);
   private errorHandler = inject(ErrorHandlerService);
+  private title = inject(Title);
 
   ngOnInit() {
     this.listar();
+
+    this.title.setTitle('Gerenciamento de Cursos');
   }
 
   abrirDialog() {

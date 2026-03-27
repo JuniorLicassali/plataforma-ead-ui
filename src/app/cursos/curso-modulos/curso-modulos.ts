@@ -13,6 +13,7 @@ import { CursoService } from '../curso-service';
 import { ErrorHandlerService } from '../../core/error-handler-service';
 import { CursoModulosDialog } from '../curso-modulos-dialog/curso-modulos-dialog';
 import { ConfirmDialog } from 'primeng/confirmdialog';
+import { Title } from '@angular/platform-browser';
 
 export type DialogModo = 'AULA' | 'MODULO';
 
@@ -39,10 +40,13 @@ export class CursoModulos implements OnInit {
   private errorHandler = inject(ErrorHandlerService);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
+  private title = inject(Title);
 
   ngOnInit() {
     this.cursoId = this.route.snapshot.params['cursoId'];
     this.listarModulos();
+
+    this.title.setTitle('Gerenciamento de conteúdo')
   }
 
   listarModulos() {
@@ -55,19 +59,6 @@ export class CursoModulos implements OnInit {
         this.errorHandler.handle(erro);
       });
   }
-
-  // salvarAula(dados: { aulaInput: any; arquivo: File }) {
-  //   this.subindoVideo.set(true);
-  //   this.progressoUpload.set(0);
-
-  //   this.cursoService
-  //     .adicionarAula(this.cursoId, this.moduloId, dados.aulaInput, dados.arquivo)
-  //     .then(() => {
-  //       this.fecharDialog();
-  //       this.listarModulos();
-  //     })
-  //     .catch((erro) => this.errorHandler.handle(erro));
-  // }
 
   confirmarExclusao(moduloId: number): void {
     this.confirmationService.confirm({

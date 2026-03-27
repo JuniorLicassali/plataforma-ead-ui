@@ -7,7 +7,7 @@ import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { CardModule } from 'primeng/card';
 import { TableLazyLoadEvent, TableModule } from 'primeng/table';
-import { Curso, CursoResumido, PerguntaCadastro, QuestionarioCadastroProf } from '../../core/model';
+import { CursoResumido, PerguntaCadastro, QuestionarioCadastroProf } from '../../core/model';
 import { QuestionarioService } from '../questionario-service';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { InputTextModule } from 'primeng/inputtext';
@@ -17,6 +17,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { TagModule } from 'primeng/tag';
 import { CursoFiltro } from '../../cursos/curso-service';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-questionario-cadastro',
@@ -63,6 +64,7 @@ export class QuestionarioCadastro implements OnInit {
   private confirmationService = inject(ConfirmationService);
   private messageService = inject(MessageService);
   private errorHandler = inject(ErrorHandlerService);
+  private title = inject(Title);
 
   private questionarioService = inject(QuestionarioService);
 
@@ -77,6 +79,8 @@ export class QuestionarioCadastro implements OnInit {
     if (this.questionarioId) {
       this.modoEdicao = true;
     }
+
+    this.mudarTitulo();
   }
 
   async carregarCursos() {
@@ -238,6 +242,14 @@ export class QuestionarioCadastro implements OnInit {
   aoMudarPagina(event: TableLazyLoadEvent) {
     const pagina = event!.first! / event!.rows!;
     this.listar(pagina);
+  }
+
+  private mudarTitulo() {
+    this.title.setTitle('Gerenciamento de Questionario');
+
+    if (this.modoEdicao) {
+      this.title.setTitle('Edição de Perguntas');
+    }
   }
 
   private chamarCarregarQuestionario() {

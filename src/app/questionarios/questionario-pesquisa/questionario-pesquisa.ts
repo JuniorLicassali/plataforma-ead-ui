@@ -13,6 +13,7 @@ import { Dialog } from 'primeng/dialog';
 import { QuestionarioService } from '../questionario-service';
 import { Router, RouterLink } from '@angular/router';
 import { ErrorHandlerService } from '../../core/error-handler-service';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-questionario',
@@ -50,11 +51,14 @@ export class Questionario implements OnInit {
   private questionarioService = inject(QuestionarioService);
   private errorHandler = inject(ErrorHandlerService);
   private router = inject(Router);
+  private title = inject(Title);
 
   ngOnInit() {
     this.carregarDadosDaNavegacao();
     
     this.verificarStatusQuestionario();
+
+    this.title.setTitle('Questionario');
   }
 
   proximaPergunta() {

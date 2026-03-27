@@ -21,7 +21,9 @@
           (click)="irParaQuestionario(curso().id)"
           class="col-12 md:col card-descricao border-round-3xl bg-white border-1 border-200 text-600 cursor-pointer p-3 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-300 transition-all transition-duration-200 select-none"
         >
-          <h2 class="mt-0 mb-0 text-base text-center">Questionário</h2>
+          <h2 class="mt-0 mb-0 text-base text-center">
+            <i class="pi pi-clipboard mr-2"></i> Questionário
+          </h2>
         </div>
 
         <div
@@ -85,3 +87,12 @@
     </div>
   </div>
 </div>
+
+<button 
+  pButton 
+  type="button" 
+  icon="pi pi-clipboard" 
+  (click)="irParaQuestionario(curso().id)"
+  class="block md:hidden fixed bottom-0 right-0 m-4 p-button-rounded p-button-lg shadow-4 z-5"
+  style="width: 60px; height: 60px;">
+</button>

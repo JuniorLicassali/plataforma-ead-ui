@@ -18,7 +18,7 @@ import { FileUpload, FileUploadModule } from 'primeng/fileupload';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ErrorHandlerService } from '../../core/error-handler-service';
 import { AuthService } from '../../seguranca/auth-service';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, Title } from '@angular/platform-browser';
 import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
 import { MessageService } from 'primeng/api';
@@ -47,6 +47,7 @@ export class MinhaConta implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private sanitizer = inject(DomSanitizer);
   private cd = inject(ChangeDetectorRef);
+  private title = inject(Title);
 
   formulario!: FormGroup;
   formularioSenha!: FormGroup;
@@ -63,6 +64,8 @@ export class MinhaConta implements OnInit, OnDestroy {
     this.configurarFormulario();
 
     this.inicializarDadosUsuario();
+
+    this.title.setTitle('Minha Conta');
   }
 
   ngOnDestroy() {

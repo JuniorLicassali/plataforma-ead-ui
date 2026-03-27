@@ -13,6 +13,7 @@ import { ErrorHandlerService } from '../../core/error-handler-service';
 import { AuthService } from '../../seguranca/auth-service';
 import { Router } from '@angular/router';
 import { Tag } from 'primeng/tag';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-cards-cursos',
@@ -43,9 +44,11 @@ export class CardsCursos implements OnInit {
   private errorHandler = inject(ErrorHandlerService);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private title = inject(Title);
 
   ngOnInit() {
     this.listar();
+    this.title.setTitle('Plataforma - Cursos')
   }
 
   listar(pagina: number = 0, acumular: boolean = false): void {
